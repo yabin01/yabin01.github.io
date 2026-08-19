@@ -45,15 +45,11 @@ export const CATEGORY_META: Record<
 };
 
 // Giscus 评论（基于 GitHub Discussions，免后端）。
-// 启用步骤：
-//   1. 在仓库开启 Discussions（Settings → General → Features）。
-//   2. 安装 Giscus App：https://github.com/apps/giscus
-//   3. 到 https://giscus.app 生成配置，把 repoId / categoryId 填进来。
-//   4. 把 enabled 改为 true。
+// 已启用：repoId / categoryId 已填好（2026-08-19）。
 export const GISCUS = {
   repo: 'yabin01/yabin01.github.io',
-  repoId: '', // 在 giscus.app 生成后填入
+  repoId: 'R_kgDOTmFjkw',
   category: 'Announcements',
-  categoryId: '', // 在 giscus.app 生成后填入
-  enabled: false, // 填好上面两项后改为 true
+  categoryId: 'DIC_kwDOTmFjk84DDsRG',
+  enabled: true,
 };

@@ -23,6 +23,29 @@ const ready = GISCUS.enabled && GISCUS.repoId && GISCUS.categoryId;
         crossorigin="anonymous"
         async
       />
+      <script is:inline>
+        (function () {
+          function syncGiscus() {
+            const theme = document.documentElement.getAttribute('data-theme') || 'light';
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage(
+                { giscus: { setConfig: { theme: theme } } },
+                'https://giscus.app'
+              );
+            }
+          }
+          // 初始同步
+          window.addEventListener('load', function () {
+            setTimeout(syncGiscus, 1500);
+          });
+          // 主题切换时同步
+          const btn = document.getElementById('theme-toggle');
+          if (btn) btn.addEventListener('click', function () {
+            setTimeout(syncGiscus, 100);
+          });
+        })();
+      </script>
     </section>
   )
 }

@@ -6,7 +6,6 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-// 聚合所有标签及文章数
 const tagCount = new Map<string, number>();
 for (const p of posts) {
   for (const t of p.data.tags) {
@@ -21,25 +20,23 @@ const tags = [...tagCount.entries()].sort(
 <BaseLayout title="标签" description="全部文章标签索引">
   <header class="cat-header">
     <h1>标签</h1>
-    <p>按主题归拢文章，共 {tags.length} 个标签。</p>
+    <p>按主题归拢文章，共 {tags.length} 个标签、{posts.length} 篇文章。</p>
   </header>
 
   {
     tags.length > 0 ? (
       <ul class="tag-cloud">
-        {
-          tags.map(([tag, count]) => (
-            <li>
-              <a class="tag-chip" href={`/tags/${encodeURIComponent(tag)}/`}>
-                {tag}
-                <span class="tag-count">{count}</span>
-              </a>
-            </li>
-          ))
-        }
+        {tags.map(([tag, count]) => (
+          <li>
+            <a class="tag-chip" href={`/tags/${encodeURIComponent(tag)}/`}>
+              #{tag}
+              <span class="tag-count">{count}</span>
+            </a>
+          </li>
+        ))}
       </ul>
     ) : (
-      <p class="post-desc">还没有标签，写文章时在 frontmatter 的 tags 里加上即可。</p>
+      <p style="color:var(--text-muted)">还没有标签，写文章时在 frontmatter 的 tags 里加上即可。</p>
     )
   }
 </BaseLayout>

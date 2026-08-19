@@ -1,0 +1,61 @@
+---
+import { SITE, NAV } from '../consts';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+
+// 每个导航项的图标（Lucide 风格）
+const icons: Record<string, string> = {
+  '/': 'M3 12 12 3l9 9M5 10v10h14V10',
+  '/category/trading': 'M3 17 9 11l4 4 8-8M14 7h7v7',
+  '/category/reading': 'M2 4h7a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-7a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h8z',
+  '/category/essays': 'M12 19l7-7 3 3-7 7H12v-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5zM2 2l7.586 7.586',
+  '/tags': 'M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82zM7 7h.01',
+  '/archive': 'M3 3h18v4H3zM5 7v14h14V7M10 12h4',
+  '/about': 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+};
+const fallbackIcon = 'M12 5v14M5 12h14';
+---
+
+<aside class="sidebar">
+  <div class="sidebar-inner">
+    <a href="/" class="sidebar-brand">{SITE.title}</a>
+    <p class="sidebar-slogan">{SITE.tagline}</p>
+
+    <nav aria-label="主导航">
+      <ul class="nav-menu">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[isActive(item.href) ? 'active' : '']}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={icons[item.href] || fallbackIcon}></path>
+                </svg>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="/write" class="sidebar-write-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+        </svg>
+        写作台
+      </a>
+      <br />
+      © {new Date().getFullYear()} {SITE.author}<br />
+      <a href="https://astro.build" target="_blank" rel="noopener">Astro</a>
+      · 部署于 <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+    </div>
+  </div>
+</aside>

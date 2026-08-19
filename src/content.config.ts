@@ -12,6 +12,7 @@ const posts = defineCollection({
     category: z.enum(['交易', '读书', '随笔']),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    cover: z.string().optional(),
   }),
 });
 

@@ -7,11 +7,9 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 
-// 归档列表用的紧凑日期（月-日），年份已在分组标题里
 const shortDate = (d: Date) =>
   `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
-// 按 年 → 月 分组（倒序）
 const byYear = new Map<number, Map<number, CollectionEntry<'posts'>[]>>();
 for (const p of posts) {
   const y = p.data.pubDate.getFullYear();
@@ -27,7 +25,7 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
 <BaseLayout title="归档" description="按年月归档全部文章">
   <header class="cat-header">
     <h1>归档</h1>
-    <p>按时间线回顾，共 {posts.length} 篇。</p>
+    <p>按时间线回顾，共 {posts.length} 篇文章。</p>
   </header>
 
   {
@@ -35,33 +33,29 @@ const years = [...byYear.entries()].sort((a, b) => b[0] - a[0]);
       years.map(([year, byMonth]) => (
         <section class="archive-year">
           <h2 class="archive-year-title">{year} 年</h2>
-          {
-            [...byMonth.entries()]
-              .sort((a, b) => b[0] - a[0])
-              .map(([month, monthPosts]) => (
-                <div class="archive-month">
-                  <h3 class="archive-month-title">{month} 月</h3>
-                  <ul class="archive-list">
-                    {
-                      monthPosts.map((post) => (
-                        <li class="archive-item">
-                          <span class="archive-date">
-                            {shortDate(post.data.pubDate)}
-                          </span>
-                          <a class="archive-link" href={`/posts/${post.id}/`}>
-                            {post.data.title}
-                          </a>
-                        </li>
-                      ))
-                    }
-                  </ul>
-                </div>
-              ))
-          }
+          {[...byMonth.entries()]
+            .sort((a, b) => b[0] - a[0])
+            .map(([month, monthPosts]) => (
+              <div class="archive-month">
+                <h3 class="archive-month-title">{month} 月</h3>
+                <ul class="archive-list">
+                  {monthPosts.map((post) => (
+                    <li class="archive-item">
+                      <span class="archive-date">
+                        {shortDate(post.data.pubDate)}
+                      </span>
+                      <a class="archive-link" href={`/posts/${post.id}/`}>
+                        {post.data.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
         </section>
       ))
     ) : (
-      <p class="post-desc">还没有文章。</p>
+      <p style="color:var(--text-muted)">还没有文章。</p>
     )
   }
 </BaseLayout>

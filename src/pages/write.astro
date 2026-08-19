@@ -10,9 +10,38 @@ import '../styles/global.css';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>写作台 · 清远日新斋</title>
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', saved);
+      })();
+    </script>
   </head>
   <body>
-    <div class="container write-wrap">
+    <header class="write-topbar">
+      <div class="write-topbar-inner">
+        <a href="/" class="write-back">← 返回博客</a>
+        <span class="write-title-mini">写作台 · 清远日新斋</span>
+        <button id="theme-toggle" class="topbar-theme write-theme-btn" title="切换日间/夜间模式" aria-label="切换日间/夜间模式">
+          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="write-wrap">
       <header class="write-head">
         <h1>写作台</h1>
         <p class="write-sub">在浏览器里写 Markdown，一键推送到 GitHub 并自动部署。</p>
@@ -88,6 +117,10 @@ import '../styles/global.css';
               摘要
               <input id="description" type="text" placeholder="一句话摘要" />
             </label>
+            <label>
+              封面图片 URL（可选）
+              <input id="cover" type="text" placeholder="https://example.com/cover.jpg 或 /images/cover.jpg" />
+            </label>
             <label class="check">
               <input id="draft" type="checkbox" /> 存为草稿（不发布）
             </label>
@@ -112,21 +145,54 @@ import '../styles/global.css';
     </div>
 
     <style>
+      body {
+        background: var(--bg);
+      }
+      .write-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--topbar-bg);
+        color: #fff;
+      }
+      .write-topbar-inner {
+        height: var(--topbar-height);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.25rem;
+      }
+      .write-back,
+      .write-title-mini {
+        color: #fff;
+        font-size: 0.9rem;
+      }
+      .write-back:hover {
+        color: var(--accent);
+      }
+      .write-title-mini {
+        color: var(--topbar-muted);
+      }
+      .write-theme-btn {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
       .write-wrap {
         max-width: 70rem;
-        padding-block: 2.5rem 4rem;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 4rem;
       }
       .write-head h1 {
-        font-family: var(--font-serif);
-        font-size: 2rem;
-        margin: 0 0 0.3rem;
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem;
       }
       .write-sub {
         color: var(--text-muted);
         margin: 0 0 1.5rem;
+        font-size: 0.9rem;
       }
       .card {
-        background: #fff;
+        background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 1.3rem 1.4rem;
@@ -183,7 +249,7 @@ import '../styles/global.css';
         font: inherit;
         cursor: pointer;
         border: 1px solid var(--border);
-        background: #fff;
+        background: var(--surface);
         color: var(--text);
         border-radius: 8px;
         padding: 0.5rem 1rem;
@@ -236,7 +302,7 @@ import '../styles/global.css';
       }
       .warn code {
         font-family: var(--font-mono);
-        background: #fff;
+        background: var(--surface);
         padding: 0.1rem 0.35rem;
         border-radius: 4px;
       }
@@ -274,6 +340,14 @@ import '../styles/global.css';
         background: #fbeceb;
         color: #b4453a;
       }
+      [data-theme="dark"] .status.ok {
+        background: #1a3a25;
+        color: #7dca9e;
+      }
+      [data-theme="dark"] .status.err {
+        background: #3a1f1c;
+        color: #e8a097;
+      }
       @media (max-width: 860px) {
         .editor-grid,
         .grid2 {
@@ -292,6 +366,7 @@ import '../styles/global.css';
       const tokenEl = $('token'), repoEl = $('repo'), branchEl = $('branch');
       const slugEl = $('slug'), titleEl = $('title'), catEl = $('category');
       const dateEl = $('pubDate'), tagsEl = $('tags'), descEl = $('description');
+      const coverEl = $('cover');
       const draftEl = $('draft'), bodyEl = $('body'), previewEl = $('preview');
       const postList = $('postList'), statusEl = $('status');
 
@@ -358,6 +433,7 @@ import '../styles/global.css';
         const pubDate = dateEl.value || new Date().toISOString().slice(0, 10);
         const description = descEl.value.trim();
         const draft = draftEl.checked;
+        const cover = coverEl.value.trim();
         const tagsStr = '[' + tags.map((t) => `"${t}"`).join(', ') + ']';
         const fm = [
           '---',
@@ -366,6 +442,7 @@ import '../styles/global.css';
           `pubDate: ${pubDate}`,
           `category: ${category}`,
           `tags: ${tagsStr}`,
+          ...(cover ? [`cover: ${cover}`] : []),
           `draft: ${draft}`,
           '---',
           '',
@@ -374,7 +451,7 @@ import '../styles/global.css';
       }
 
       function resetForm() {
-        slugEl.value = titleEl.value = tagsEl.value = descEl.value = bodyEl.value = '';
+        slugEl.value = titleEl.value = tagsEl.value = descEl.value = coverEl.value = bodyEl.value = '';
         catEl.value = '交易';
         draftEl.checked = false;
         dateEl.value = new Date().toISOString().slice(0, 10);
@@ -410,6 +487,7 @@ import '../styles/global.css';
         tagsEl.value = (data.tags || []).join(', ');
         dateEl.value = (data.pubDate || '').slice(0, 10);
         descEl.value = data.description || '';
+        coverEl.value = data.cover || '';
         draftEl.checked = !!data.draft;
         bodyEl.value = body;
         slugEl.value = path.split('/').pop().replace(/\.md$/, '');
@@ -495,6 +573,17 @@ import '../styles/global.css';
       dateEl.value = new Date().toISOString().slice(0, 10);
       renderPreview();
       if (tokenEl.value.trim()) loadPosts();
+
+      // 主题切换
+      const themeBtn = $('theme-toggle');
+      if (themeBtn) {
+        themeBtn.addEventListener('click', function () {
+          const current = document.documentElement.getAttribute('data-theme') || 'light';
+          const next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+        });
+      }
     </script>
   </body>
 </html>

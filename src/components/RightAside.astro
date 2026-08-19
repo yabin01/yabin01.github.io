@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import { SITE } from '../consts';
+
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 最新 5 篇
+const recent = allPosts.slice(0, 5);
+
+// 标签云（按数量排序，取前 12）
+const tagCount = new Map<string, number>();
+for (const p of allPosts) {
+  for (const t of p.data.tags) {
+    tagCount.set(t, (tagCount.get(t) ?? 0) + 1);
+  }
+}
+const topTags = [...tagCount.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 12);
+---
+
+<aside class="right-aside" aria-label="侧边栏">
+  <!-- 搜索 -->
+  <div class="aside-widget">
+    <form class="search-box" onsubmit="event.preventDefault(); const q=this.q.value.trim(); if(q) location.href='/tags/'+encodeURIComponent(q)+'/';">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input name="q" type="search" placeholder="搜索文章（按标签）" aria-label="搜索" />
+    </form>
+  </div>
+
+  <!-- 最新文章 -->
+  <div class="aside-widget">
+    <h3 class="aside-title">
+      最新文章
+      <a href="/archive" class="aside-more">全部</a>
+    </h3>
+    <ul class="aside-list">
+      {
+        recent.map((post) => (
+          <li>
+            <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+            <FormattedDate date={post.data.pubDate} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- 热门标签 -->
+  <div class="aside-widget">
+    <h3 class="aside-title">
+      标签
+      <a href="/tags" class="aside-more">全部</a>
+    </h3>
+    <div class="aside-tags">
+      {
+        topTags.map(([tag, count]) => (
+          <a class="aside-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
+            #{tag}
+            <span class="count">{count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- 关于 -->
+  <div class="aside-widget">
+    <h3 class="aside-title">关于</h3>
+    <p class="about-brief">
+      {SITE.author}，全职数字货币交易者，爱好读书、历史与哲学。本站记录交易复盘、读书笔记与日常随想。
+    </p>
+    <p class="about-brief" style="margin-top: 0.6rem;">
+      <a href="/about" style="color: var(--accent);">了解更多 →</a>
+    </p>
+  </div>
+</aside>

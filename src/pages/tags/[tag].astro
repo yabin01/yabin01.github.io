@@ -5,7 +5,6 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
-  // 收集所有出现的标签
   const tagSet = new Set<string>();
   for (const p of posts) {
     for (const t of p.data.tags) tagSet.add(t);
@@ -24,16 +23,14 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 ---
 
-<BaseLayout title={tag} description={`标签「${tag}」下的文章`}>
+<BaseLayout title={`#${tag}`} description={`标签「${tag}」下的文章`}>
   <header class="cat-header">
     <h1>#{tag}</h1>
     <p>共 {posts.length} 篇</p>
-    <p class="cat-count">
-      <a href="/tags/">← 全部标签</a>
-    </p>
+    <p class="cat-count"><a href="/tags/">← 全部标签</a></p>
   </header>
 
-  <section class="post-list">
+  <div class="post-list">
     {posts.map((post) => <PostCard post={post} />)}
-  </section>
+  </div>
 </BaseLayout>

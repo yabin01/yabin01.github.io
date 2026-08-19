@@ -28,7 +28,13 @@ const { meta, posts } = Astro.props;
     <p class="cat-count">共 {posts.length} 篇</p>
   </header>
 
-  <section class="post-list">
-    {posts.map((post) => <PostCard post={post} />)}
-  </section>
+  {
+    posts.length > 0 ? (
+      <div class="post-list">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    ) : (
+      <p style="color:var(--text-muted)">该分类下还没有文章。</p>
+    )
+  }
 </BaseLayout>

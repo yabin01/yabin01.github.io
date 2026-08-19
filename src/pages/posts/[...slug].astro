@@ -18,22 +18,27 @@ const { Content } = await render(post);
 const meta = CATEGORY_META[post.data.category];
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="post">
+<BaseLayout title={post.data.title} description={post.data.description} noAside>
+  <article class="post-article">
     <header class="post-header">
       <div class="post-meta">
-        <a href={`/category/${meta.slug}`} class="post-cat">{post.data.category}</a>
+        <a class="post-cat" href={`/category/${meta.slug}`}>{post.data.category}</a>
         <FormattedDate date={post.data.pubDate} />
         {
           post.data.updatedDate && (
             <span class="updated">
-              更新于 <FormattedDate date={post.data.updatedDate} />
+              · 更新于 <FormattedDate date={post.data.updatedDate} />
             </span>
           )
         }
       </div>
       <h1 class="post-h1">{post.data.title}</h1>
       {post.data.description && <p class="post-lead">{post.data.description}</p>}
+      {post.data.cover && (
+        <div class="post-cover">
+          <img src={post.data.cover} alt={post.data.title} />
+        </div>
+      )}
     </header>
 
     <div class="prose">
@@ -42,7 +47,7 @@ const meta = CATEGORY_META[post.data.category];
 
     {
       post.data.tags.length > 0 && (
-        <ul class="post-tags">
+        <ul class="post-tags" style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
           {post.data.tags.map((t) => (
             <li>
               <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>

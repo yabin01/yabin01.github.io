@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import bookshelf from '../data/bookshelf.json';
+
+const { stats, books, updated } = bookshelf;
+
+function fmtDate(ts?: number) {
+  if (!ts) return '';
+  const d = new Date(ts * 1000);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function fmtHours(min?: number) {
+  if (!min) return '0';
+  return (min / 60).toFixed(min < 600 ? 1 : 0);
+}
+
+const statItems = [
+  { label: '书架藏书', value: String(stats.totalBooks) },
+  { label: '读完', value: String(stats.finishedBooks) },
+  { label: '划线', value: String(stats.highlights) },
+  { label: '想法', value: String(stats.thoughts) },
+  { label: '阅读时长', value: `${fmtHours(stats.readMinutes)} 小时` },
+  { label: '阅读天数', value: String(stats.readDays) },
+];
+---
+
+<BaseLayout title="我的书架" description="清远先生的微信读书书架、划线与想法" noAside>
+  <div class="bookshelf">
+    <header class="page-head">
+      <div class="page-head-row">
+        <h1>我的书架</h1>
+        <button id="sync-btn" class="shelf-sync-btn" type="button" title="从微信读书同步最新划线与想法">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 2v6h-6"></path>
+            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+            <path d="M3 22v-6h6"></path>
+            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+          </svg>
+          同步书架
+        </button>
+      </div>
+      <p class="page-sub">
+        微信读书同步 · 划线与想法
+        {updated && <span class="shelf-updated">更新于 {updated}</span>}
+        <span id="sync-status" class="sync-status" role="status"></span>
+      </p>
+    </header>
+
+    {
+      stats.totalBooks === 0 ? (
+        <div class="shelf-empty">
+          <p>书架数据尚未同步。</p>
+          <p class="hint">等待导入微信读书的划线与想法数据。</p>
+        </div>
+      ) : (
+        <>
+          <div class="shelf-stats">
+            {statItems.map((s) => (
+              <div class="stat-item">
+                <span class="stat-value">{s.value}</span>
+                <span class="stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div class="shelf-books">
+            {books.map((b, i) => (
+              <details class="book-card" open={i === 0}>
+                <summary>
+                  <span class="book-cover">
+                    {b.cover ? <img src={b.cover} alt={b.title} loading="lazy" /> : <span class="cover-fallback">{b.title.slice(0, 1)}</span>}
+                  </span>
+                  <span class="book-meta">
+                    <span class="book-title">{b.title}</span>
+                    <span class="book-author">{b.author}</span>
+                    <span class="book-tags">
+                      {b.finished ? <span class="tag-done">读完</span> : <span class="tag-reading">在读 {b.progress ? `${b.progress}%` : ''}</span>}
+                      <span class="tag-count">{b.highlightCount} 条划线</span>
+                      {b.thoughtCount > 0 && <span class="tag-count">{b.thoughtCount} 条想法</span>}
+                    </span>
+                  </span>
+                  <span class="book-toggle" aria-hidden="true"></span>
+                </summary>
+
+                <div class="book-body">
+                  {b.highlights.length > 0 && (
+                    <section class="note-section">
+                      <h3>划线</h3>
+                      <ul class="hl-list">
+                        {b.highlights.map((h) => (
+                          <li>
+                            {h.chapter && <span class="hl-chapter">{h.chapter}</span>}
+                            <blockquote>{h.text}</blockquote>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
+                  {b.thoughts.length > 0 && (
+                    <section class="note-section">
+                      <h3>想法</h3>
+                      <ul class="th-list">
+                        {b.thoughts.map((t) => (
+                          <li>
+                            {t.abstract && <blockquote class="th-abstract">{t.abstract}</blockquote>}
+                            <p class="th-content">{t.content}</p>
+                            {t.createTime && <span class="note-date">{fmtDate(t.createTime)}</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
+                  {b.highlights.length === 0 && b.thoughts.length === 0 && <p class="note-none">暂无导出的笔记内容</p>}
+                </div>
+              </details>
+            ))}
+          </div>
+        </>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  const syncBtn = document.getElementById('sync-btn');
+  const syncStatus = document.getElementById('sync-status');
+  const REPO_KEY = 'gh_repo';
+  const TOKEN_KEY = 'gh_token';
+
+  function setStatus(msg, ok) {
+    if (!syncStatus) return;
+    syncStatus.textContent = msg;
+    syncStatus.style.color = ok ? 'var(--accent)' : '#b4453a';
+  }
+
+  syncBtn?.addEventListener('click', async () => {
+    let token = localStorage.getItem(TOKEN_KEY);
+    const repo = localStorage.getItem(REPO_KEY) || 'yabin01/yabin01.github.io';
+
+    if (!token) {
+      token = prompt('首次同步需填写 GitHub 访问令牌（需 workflow 权限，仅存于本浏览器）:\n\n（可去 /write 页面保存，两者共用同一令牌）');
+      if (!token) return;
+      localStorage.setItem(TOKEN_KEY, token.trim());
+      localStorage.setItem(REPO_KEY, repo);
+    }
+
+    syncBtn.disabled = true;
+    syncBtn.classList.add('loading');
+    setStatus('正在触发同步…');
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/sync-weread.yml/dispatches`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: 'Bearer ' + token.trim(),
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ref: 'main' }),
+      });
+
+      if (res.status === 204) {
+        setStatus('✓ 同步已触发，约 1~2 分钟后自动部署生效，届时刷新页面即可看到最新数据', true);
+      } else if (res.status === 401) {
+        localStorage.removeItem(TOKEN_KEY);
+        setStatus('令牌无效，请重新点击并输入正确的令牌');
+      } else if (res.status === 403 || res.status === 404) {
+        setStatus('令牌权限不足（需 workflow 权限）或 workflow 未部署，请检查令牌后重试');
+      } else {
+        const e = await res.json().catch(() => ({}));
+        setStatus('触发失败：' + (e.message || res.status));
+      }
+    } catch (err) {
+      setStatus('网络错误：' + err.message);
+    } finally {
+      syncBtn.disabled = false;
+      syncBtn.classList.remove('loading');
+    }
+  });
+</script>

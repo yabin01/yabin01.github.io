@@ -4,11 +4,11 @@ export const SITE = {
   title: '清远日新斋',
   tagline: '交易 · 读书 · 随笔',
   description:
-    '清远日新斋 —— 刘亚斌（清远先生）的个人博客，记录数字货币交易、历史与哲学读书，以及日常随笔。',
+    '清远日新斋 —— 清远先生的个人博客，记录交易复盘、分享历史与哲学，缠论学习笔记以及日常随笔。',
   author: '清远先生',
   lang: 'zh-CN',
   url: 'https://yabin01.github.io',
-  email: '', // 选填，留空则不显示
+  email: 'yabinliu1997@gmail.com', // 选填，留空则不显示
 };
 
 // 顶部导航。href 使用站点内路径。

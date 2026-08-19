@@ -1,4 +1,4 @@
-# 清远先生 · 个人博客
+# 清远日新斋 · 个人博客
 
 基于 [Astro](https://astro.build) 构建的极简留白风格博客，部署于 GitHub Pages（`yabin01.github.io`）。
 

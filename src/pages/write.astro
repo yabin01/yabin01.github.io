@@ -1,0 +1,500 @@
+---
+import '../styles/global.css';
+// 浏览器端写作台：填写表单 → 通过 GitHub Contents API 直接提交 .md → 触发 Pages 部署。
+// 不在导航中公开，访问地址：/write
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>写作台 · 清远先生</title>
+  </head>
+  <body>
+    <div class="container write-wrap">
+      <header class="write-head">
+        <h1>写作台</h1>
+        <p class="write-sub">在浏览器里写 Markdown，一键推送到 GitHub 并自动部署。</p>
+      </header>
+
+      <section class="card settings">
+        <h2>GitHub 设置</h2>
+        <div class="grid2">
+          <label>
+            个人访问令牌 (PAT)
+            <input id="token" type="password" placeholder="ghp_xxx 或 github_pat_xxx" autocomplete="off" />
+          </label>
+          <label>
+            仓库 (owner/repo)
+            <input id="repo" type="text" value="yabin01/yabin01.github.io" />
+          </label>
+          <label>
+            分支
+            <input id="branch" type="text" value="main" />
+          </label>
+          <div class="save-row">
+            <button id="saveSettings" class="btn">保存设置</button>
+            <span class="hint">令牌仅存于本浏览器 localStorage，不会上传。</span>
+          </div>
+        </div>
+        <p class="warn">
+          令牌需具备该仓库的 <code>contents: write</code> 权限（建议用细粒度 PAT，仅授权此仓库）。
+          公开站点上任何人都看得到这个页面，但没有你的令牌无法操作。
+        </p>
+      </section>
+
+      <section class="card">
+        <div class="toolbar">
+          <select id="postList" aria-label="已有文章">
+            <option value="">— 选择已有文章编辑 —</option>
+          </select>
+          <button id="refresh" class="btn ghost">刷新列表</button>
+          <button id="new" class="btn ghost">新建</button>
+        </div>
+      </section>
+
+      <div class="editor-grid">
+        <section class="card">
+          <h2>内容</h2>
+          <div class="form">
+            <label>
+              文件标识 (slug，用于 URL，英文)
+              <input id="slug" type="text" placeholder="如 chan-lun-zhongshu" />
+            </label>
+            <label>
+              标题
+              <input id="title" type="text" placeholder="文章标题" />
+            </label>
+            <div class="grid2">
+              <label>
+                分类
+                <select id="category">
+                  <option value="交易">交易</option>
+                  <option value="读书">读书</option>
+                  <option value="随笔">随笔</option>
+                </select>
+              </label>
+              <label>
+                日期
+                <input id="pubDate" type="date" />
+              </label>
+            </div>
+            <label>
+              标签 (逗号分隔)
+              <input id="tags" type="text" placeholder="缠论, 复盘" />
+            </label>
+            <label>
+              摘要
+              <input id="description" type="text" placeholder="一句话摘要" />
+            </label>
+            <label class="check">
+              <input id="draft" type="checkbox" /> 存为草稿（不发布）
+            </label>
+            <label>
+              正文 (Markdown)
+              <textarea id="body" rows="18" placeholder="在这里写正文…"></textarea>
+            </label>
+            <div class="actions">
+              <button id="save" class="btn primary">保存并推送</button>
+              <button id="delete" class="btn danger">删除此文</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card preview-card">
+          <h2>预览</h2>
+          <div id="preview" class="prose"></div>
+        </section>
+      </div>
+
+      <div id="status" class="status" role="status"></div>
+    </div>
+
+    <style>
+      .write-wrap {
+        max-width: 70rem;
+        padding-block: 2.5rem 4rem;
+      }
+      .write-head h1 {
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        margin: 0 0 0.3rem;
+      }
+      .write-sub {
+        color: var(--text-muted);
+        margin: 0 0 1.5rem;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.3rem 1.4rem;
+        margin-bottom: 1.2rem;
+      }
+      .card h2 {
+        font-family: var(--font-serif);
+        font-size: 1.15rem;
+        margin: 0 0 1rem;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 0.9rem;
+      }
+      label.check {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text);
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: var(--text);
+        background: var(--bg-subtle);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.55rem 0.7rem;
+        width: 100%;
+      }
+      textarea {
+        resize: vertical;
+        line-height: 1.7;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--accent-soft);
+      }
+      .btn {
+        font: inherit;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        transition: all 0.15s ease;
+      }
+      .btn:hover {
+        border-color: var(--accent-soft);
+      }
+      .btn.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        opacity: 0.92;
+      }
+      .btn.danger {
+        color: #b4453a;
+        border-color: #e7c4bf;
+      }
+      .btn.ghost {
+        background: var(--bg-subtle);
+      }
+      .toolbar {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+      }
+      .toolbar select {
+        flex: 1;
+      }
+      .save-row {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+      .hint {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+      .warn {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        background: var(--bg-subtle);
+        border-radius: 8px;
+        padding: 0.7rem 0.9rem;
+        margin: 0.5rem 0 0;
+      }
+      .warn code {
+        font-family: var(--font-mono);
+        background: #fff;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+      }
+      .editor-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem;
+        align-items: start;
+      }
+      .actions {
+        display: flex;
+        gap: 0.7rem;
+        margin-top: 0.4rem;
+      }
+      .preview-card {
+        position: sticky;
+        top: 1rem;
+      }
+      .status {
+        margin-top: 1rem;
+        min-height: 1.4rem;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.9rem;
+        border-radius: 8px;
+        display: none;
+      }
+      .status.show {
+        display: block;
+      }
+      .status.ok {
+        background: #eaf3ec;
+        color: #2f6b43;
+      }
+      .status.err {
+        background: #fbeceb;
+        color: #b4453a;
+      }
+      @media (max-width: 860px) {
+        .editor-grid,
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+        .preview-card {
+          position: static;
+        }
+      }
+    </style>
+
+    <script>
+      import { marked } from 'marked';
+
+      const $ = (id) => document.getElementById(id);
+      const tokenEl = $('token'), repoEl = $('repo'), branchEl = $('branch');
+      const slugEl = $('slug'), titleEl = $('title'), catEl = $('category');
+      const dateEl = $('pubDate'), tagsEl = $('tags'), descEl = $('description');
+      const draftEl = $('draft'), bodyEl = $('body'), previewEl = $('preview');
+      const postList = $('postList'), statusEl = $('status');
+
+      let currentSha = null;
+      let currentPath = null;
+
+      const b64encode = (s) => btoa(unescape(encodeURIComponent(s)));
+      const b64decode = (b) => decodeURIComponent(escape(atob(b)));
+
+      function status(msg, type) {
+        statusEl.textContent = msg;
+        statusEl.className = 'status show ' + (type || '');
+        if (type === 'ok') setTimeout(() => (statusEl.className = 'status'), 4000);
+      }
+
+      function api(path, opts = {}) {
+        const headers = {
+          Accept: 'application/vnd.github+json',
+          Authorization: 'Bearer ' + tokenEl.value.trim(),
+          'X-GitHub-Api-Version': '2022-11-28',
+        };
+        if (opts.body) headers['Content-Type'] = 'application/json';
+        return fetch('https://api.github.com' + path, { ...opts, headers });
+      }
+
+      function renderPreview() {
+        previewEl.innerHTML = marked.parse(bodyEl.value || '_（预览区）_');
+      }
+
+      function parseFrontmatter(raw) {
+        const m = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
+        if (!m) return { data: {}, body: raw };
+        const fm = m[1], body = m[2];
+        const data = {};
+        fm.split('\n').forEach((line) => {
+          const i = line.indexOf(':');
+          if (i === -1) return;
+          const key = line.slice(0, i).trim();
+          let val = line.slice(i + 1).trim().replace(/^["']|["']$/g, '');
+          if (key === 'tags') {
+            try {
+              data.tags = JSON.parse(val.replace(/'/g, '"'));
+            } catch {
+              data.tags = val
+                .replace(/^\[|\]$/g, '')
+                .split(',')
+                .map((s) => s.trim().replace(/^["']|["']$/g, ''))
+                .filter(Boolean);
+            }
+          } else if (key === 'draft') {
+            data.draft = val === 'true';
+          } else {
+            data[key] = val;
+          }
+        });
+        return { data, body };
+      }
+
+      function buildMarkdown() {
+        const slug = (slugEl.value.trim() || 'post-' + Date.now()).replace(/\s+/g, '-');
+        const title = titleEl.value.trim() || '未命名';
+        const category = catEl.value;
+        const tags = tagsEl.value.split(',').map((s) => s.trim()).filter(Boolean);
+        const pubDate = dateEl.value || new Date().toISOString().slice(0, 10);
+        const description = descEl.value.trim();
+        const draft = draftEl.checked;
+        const tagsStr = '[' + tags.map((t) => `"${t}"`).join(', ') + ']';
+        const fm = [
+          '---',
+          `title: ${title}`,
+          `description: ${description}`,
+          `pubDate: ${pubDate}`,
+          `category: ${category}`,
+          `tags: ${tagsStr}`,
+          `draft: ${draft}`,
+          '---',
+          '',
+        ].join('\n');
+        return { slug, content: fm + bodyEl.value + '\n' };
+      }
+
+      function resetForm() {
+        slugEl.value = titleEl.value = tagsEl.value = descEl.value = bodyEl.value = '';
+        catEl.value = '交易';
+        draftEl.checked = false;
+        dateEl.value = new Date().toISOString().slice(0, 10);
+        currentSha = null;
+        currentPath = null;
+        renderPreview();
+      }
+
+      async function loadPosts() {
+        if (!tokenEl.value.trim()) return;
+        try {
+          const res = await api(`/repos/${repoEl.value.trim()}/contents/src/content/posts`);
+          if (!res.ok) return;
+          const files = await res.json();
+          const mds = files.filter((f) => f.name.endsWith('.md'));
+          postList.innerHTML =
+            '<option value="">— 选择已有文章编辑 —</option>' +
+            mds
+              .map((f) => `<option value="${f.path}" data-sha="${f.sha}">${f.name}</option>`)
+              .join('');
+        } catch (e) {
+          /* ignore */
+        }
+      }
+
+      async function loadPost(path, sha) {
+        const res = await api(`/repos/${repoEl.value.trim()}/contents/${path}`);
+        const d = await res.json();
+        const text = b64decode(d.content);
+        const { data, body } = parseFrontmatter(text);
+        titleEl.value = data.title || '';
+        catEl.value = data.category || '交易';
+        tagsEl.value = (data.tags || []).join(', ');
+        dateEl.value = (data.pubDate || '').slice(0, 10);
+        descEl.value = data.description || '';
+        draftEl.checked = !!data.draft;
+        bodyEl.value = body;
+        slugEl.value = path.split('/').pop().replace(/\.md$/, '');
+        currentSha = d.sha;
+        currentPath = path;
+        renderPreview();
+        status('已载入：' + path, 'ok');
+      }
+
+      async function save() {
+        if (!tokenEl.value.trim()) return status('请先填写并保存 GitHub Token', 'err');
+        const { slug, content } = buildMarkdown();
+        const path = `src/content/posts/${slug}.md`;
+        const body = {
+          message: `blog: ${slug}`,
+          content: b64encode(content),
+          branch: branchEl.value.trim() || 'main',
+        };
+        if (currentSha) body.sha = currentSha;
+        status('推送中…');
+        const res = await api(`/repos/${repoEl.value.trim()}/contents/${path}`, {
+          method: 'PUT',
+          body: JSON.stringify(body),
+        });
+        if (res.ok) {
+          const j = await res.json();
+          currentSha = j.content.sha;
+          currentPath = path;
+          status('已推送 ✓ GitHub Actions 将自动部署', 'ok');
+          await loadPosts();
+        } else {
+          const e = await res.json().catch(() => ({}));
+          status('推送失败：' + (e.message || res.status), 'err');
+        }
+      }
+
+      async function del() {
+        if (!currentPath || !currentSha) return status('没有可删除的文章', 'err');
+        if (!confirm('确定删除该文章？此操作不可撤销。')) return;
+        const res = await api(`/repos/${repoEl.value.trim()}/contents/${currentPath}`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            message: 'delete ' + currentPath,
+            sha: currentSha,
+            branch: branchEl.value.trim() || 'main',
+          }),
+        });
+        if (res.ok) {
+          status('已删除', 'ok');
+          resetForm();
+          await loadPosts();
+        } else {
+          status('删除失败', 'err');
+        }
+      }
+
+      // 事件
+      bodyEl.addEventListener('input', renderPreview);
+      $('saveSettings').addEventListener('click', () => {
+        localStorage.setItem('gh_token', tokenEl.value.trim());
+        localStorage.setItem('gh_repo', repoEl.value.trim());
+        localStorage.setItem('gh_branch', branchEl.value.trim());
+        status('设置已保存到本浏览器', 'ok');
+        loadPosts();
+      });
+      $('refresh').addEventListener('click', loadPosts);
+      $('new').addEventListener('click', () => {
+        resetForm();
+        postList.value = '';
+        status('已清空，开始新文章', 'ok');
+      });
+      $('save').addEventListener('click', save);
+      $('delete').addEventListener('click', del);
+      postList.addEventListener('change', () => {
+        const opt = postList.selectedOptions[0];
+        if (opt && opt.value) loadPost(opt.value, opt.dataset.sha);
+      });
+
+      // 初始化
+      tokenEl.value = localStorage.getItem('gh_token') || '';
+      repoEl.value = localStorage.getItem('gh_repo') || 'yabin01/yabin01.github.io';
+      branchEl.value = localStorage.getItem('gh_branch') || 'main';
+      dateEl.value = new Date().toISOString().slice(0, 10);
+      renderPreview();
+      if (tokenEl.value.trim()) loadPosts();
+    </script>
+  </body>
+</html>

@@ -50,6 +50,23 @@ draft: false              # true 表示草稿，不会被发布
 
 文章 URL 为 `/posts/<文件名>/`（不含 `.md`）。保存后本地会热更新。
 
+## 浏览器里直接写并一键推送（/write）
+
+不想碰命令行？站点内置了一个纯前端的写作台，访问 `/write` 即可在浏览器里写 Markdown 并直接推送到 GitHub。
+
+1. 打开 `https://yabin01.github.io/write`。
+2. 在「GitHub 设置」里填入**个人访问令牌（PAT）**并保存：
+   - 建议用**细粒度 PAT**，仅授权 `yabin01/yabin01.github.io` 仓库的 `Contents: Read and write`。
+   - 经典 PAT 需要勾选 `repo` 权限。
+   - 令牌只存在你本浏览器的 localStorage，不会上传到任何地方。
+3. 点「刷新列表」加载已有文章，或直接填表写新文章：
+   - `slug`：文件标识（英文，用于 URL，如 `chan-lun`）
+   - `标题 / 分类 / 日期 / 标签 / 摘要 / 正文`
+   - 右侧实时预览正文渲染效果
+4. 点「保存并推送」→ 通过 GitHub API 把 `.md` 提交到仓库 → 触发已有的 Pages 部署。
+
+> 安全提示：该页面随站点公开部署，任何人都能打开，但没有你的 PAT 无法做任何操作。若不想暴露，可从 `src/pages/` 删掉 `write.astro` 后重新部署。
+
 ## 修改站名、导航、分类
 
 编辑 `src/consts.ts`：

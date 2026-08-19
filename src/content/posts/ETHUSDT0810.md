@@ -3,7 +3,7 @@ title: 20260810ETH交易复盘
 description: 不定级别不交易。
 pubDate: 2026-08-10
 category: 交易
-tags: ["缠论，ETH"]
+tags: ["缠论，ETH，交易复盘"]
 draft: false
 ---
 ### 1. 操作过程
@@ -76,4 +76,5 @@ S点后的第三个向下段，相比于中枢的进入段，力度相当，无�
 ![image2.png](https://picui.ogmua.cn/s1/2026/08/19/6a853fa6c4a80.webp)
 
 ***开： 1927.89  平：1918.98   +36.66%。***
+
 

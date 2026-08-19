@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+---
+
+<BaseLayout title="关于" description={`关于 ${SITE.author}`}>
+  <article class="prose about">
+    <h1>关于</h1>
+    <p>
+      我是 <strong>{SITE.author}</strong>（刘亚斌），一名全职数字货币交易者，以合约为主，分析方法偏重技术分析，核心框架是缠论（缠中说禅）——笔、线段、中枢、背驰、级别，构成我理解市场的基本语言。
+    </p>
+    <p>
+      交易之外，我读书，尤其偏爱历史与哲学。历史让我看见时间的厚度，哲学让我学会把问题想清楚。给 AI 取名「苏格拉底」，也是因为我相信对话与追问比答案更有价值。
+    </p>
+    <h2>这个博客写什么</h2>
+    <ul>
+      <li><strong>交易</strong>：缠论实战、行情复盘、交易日志与对市场的思考。</li>
+      <li><strong>读书</strong>：历史与哲学的阅读笔记，有时是一本书，有时只是一个念头。</li>
+      <li><strong>随笔</strong>：不分类的日常随想，关于专注、独处与生活本身。</li>
+    </ul>
+    <h2>怎么写</h2>
+    <p>
+      全部文章以 Markdown 写成，放在 <code>src/content/posts/</code> 目录下，由 Astro 构建，自动部署到 GitHub Pages。简单、安静、属于自己的地方。
+    </p>
+    {
+      SITE.email && (
+        <p>
+          联系：<a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </p>
+      )
+    }
+  </article>
+</BaseLayout>

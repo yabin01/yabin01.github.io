@@ -1,0 +1,21 @@
+---
+import { SITE, NAV } from '../consts';
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-title">{SITE.title}</a>
+    <nav class="site-nav" aria-label="主导航">
+      {
+        NAV.map((item) => (
+          <a href={item.href} class:list={[isActive(item.href) ? 'active' : '']}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

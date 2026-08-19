@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { SITE } from '../consts';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout>
+  <section class="intro">
+    <h1 class="intro-title">{SITE.title}</h1>
+    <p class="intro-tagline">{SITE.tagline}</p>
+    <p class="intro-desc">{SITE.description}</p>
+  </section>
+
+  <section class="post-list">
+    {posts.map((post) => <PostCard post={post} />)}
+  </section>
+</BaseLayout>

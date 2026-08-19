@@ -1,0 +1,28 @@
+---
+import { GISCUS } from '../consts';
+const ready = GISCUS.enabled && GISCUS.repoId && GISCUS.categoryId;
+---
+
+{
+  ready && (
+    <section class="giscus-wrap" aria-label="评论">
+      <script
+        src="https://giscus.app/client.js"
+        data-repo={GISCUS.repo}
+        data-repo-id={GISCUS.repoId}
+        data-category={GISCUS.category}
+        data-category-id={GISCUS.categoryId}
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="zh-CN"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async
+      />
+    </section>
+  )
+}

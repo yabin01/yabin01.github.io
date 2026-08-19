@@ -1,0 +1,16 @@
+# 构建产物
+dist/
+# Astro 生成的类型
+.astro/
+# 依赖
+node_modules/
+# 日志
+npm-debug.log*
+# 环境变量
+.env
+.env.production
+# 编辑器/系统
+.DS_Store
+Thumbs.db
+# WorkBuddy 工作区数据（不要提交）
+.workbuddy/

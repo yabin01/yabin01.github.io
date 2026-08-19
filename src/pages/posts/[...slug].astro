@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Giscus from '../../components/Giscus.astro';
+import { getCollection, render } from 'astro:content';
+import { CATEGORY_META } from '../../consts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const meta = CATEGORY_META[post.data.category];
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="post">
+    <header class="post-header">
+      <div class="post-meta">
+        <a href={`/category/${meta.slug}`} class="post-cat">{post.data.category}</a>
+        <FormattedDate date={post.data.pubDate} />
+        {
+          post.data.updatedDate && (
+            <span class="updated">
+              更新于 <FormattedDate date={post.data.updatedDate} />
+            </span>
+          )
+        }
+      </div>
+      <h1 class="post-h1">{post.data.title}</h1>
+      {post.data.description && <p class="post-lead">{post.data.description}</p>}
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      post.data.tags.length > 0 && (
+        <ul class="post-tags">
+          {post.data.tags.map((t) => (
+            <li>#{t}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <Giscus />
+  </article>
+</BaseLayout>

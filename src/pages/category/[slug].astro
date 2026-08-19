@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { CATEGORY_META } from '../../consts';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return Object.entries(CATEGORY_META).map(([category, meta]) => ({
+    params: { slug: meta.slug },
+    props: {
+      category,
+      meta,
+      posts: posts
+        .filter((p) => p.data.category === category)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+    },
+  }));
+}
+
+const { meta, posts } = Astro.props;
+---
+
+<BaseLayout title={meta.label} description={meta.desc}>
+  <header class="cat-header">
+    <h1>{meta.label}</h1>
+    <p>{meta.desc}</p>
+    <p class="cat-count">共 {posts.length} 篇</p>
+  </header>
+
+  <section class="post-list">
+    {posts.map((post) => <PostCard post={post} />)}
+  </section>
+</BaseLayout>

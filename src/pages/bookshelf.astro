@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import bookshelf from '../data/bookshelf.json';
+import bookshelf from '../data/weread.json';
 
 const { stats, books, updated } = bookshelf;
 
@@ -23,9 +23,51 @@ const statItems = [
   { label: '阅读时长', value: `${fmtHours(stats.readMinutes)} 小时` },
   { label: '阅读天数', value: String(stats.readDays) },
 ];
+
+// 按年阅读时长 → 柱状图数据
+const yearly: { year: number; hours: number }[] = Object.entries(stats.yearlyReadTimes || {})
+  .map(([ts, sec]) => ({
+    year: new Date(Number(ts) * 1000).getFullYear(),
+    hours: Math.round(Number(sec) / 3600),
+  }))
+  .filter((x) => x.year > 2010)
+  .sort((a, b) => a.year - b.year);
+const maxYearHours = Math.max(1, ...yearly.map((y) => y.hours));
+const totalYearHours = yearly.reduce((s, y) => s + y.hours, 0);
+
+// 当月每日阅读时长 → 柱状图数据（key=当天 0 点时间戳，value=秒）
+const daily: { ts: number; label: string; minutes: number }[] = Object.entries(stats.dailyReadTimes || {})
+  .map(([ts, sec]) => {
+    const d = new Date(Number(ts) * 1000);
+    return {
+      ts: Number(ts),
+      label: `${d.getMonth() + 1}/${d.getDate()}`,
+      minutes: Math.round(Number(sec) / 60),
+    };
+  })
+  .sort((a, b) => a.ts - b.ts);
+const maxDailyMinutes = Math.max(1, ...daily.map((x) => x.minutes));
+const totalDailyMinutes = daily.reduce((s, x) => s + x.minutes, 0);
+const dailyMonthLabel = daily.length > 0 ? `${new Date(daily[0].ts * 1000).getFullYear()} 年 ${new Date(daily[0].ts * 1000).getMonth() + 1} 月` : '';
+
+// 划线按章节分组
+function groupHighlights(highlights: { chapter: string; text: string; createTime: number }[]) {
+  const map = new Map<string, typeof highlights>();
+  for (const h of highlights) {
+    const k = h.chapter || '未分章节';
+    if (!map.has(k)) map.set(k, []);
+    map.get(k)!.push(h);
+  }
+  return Array.from(map.entries()).map(([chapter, items]) => ({ chapter, items }));
+}
+
+const booksProcessed = books.map((b) => ({
+  ...b,
+  highlightGroups: b.highlights.length ? groupHighlights(b.highlights) : [],
+}));
 ---
 
-<BaseLayout title="我的书架" description="清远先生的微信读书书架、划线与想法" noAside>
+<BaseLayout title="我的书架" description="清远先生的微信读书书架、划线与想法">
   <div class="bookshelf">
     <header class="page-head">
       <div class="page-head-row">
@@ -64,8 +106,46 @@ const statItems = [
             ))}
           </div>
 
+          {yearly.length > 0 && (
+            <section class="chart-card">
+              <div class="chart-head">
+                <h3>每年阅读时长</h3>
+                <span class="chart-meta">共 {totalYearHours} 小时</span>
+              </div>
+              <div class="year-chart">
+                {yearly.map((y) => (
+                  <div class="year-col" title={`${y.year} 年：${y.hours} 小时`}>
+                    <div class="year-bar" style={`height: ${(y.hours / maxYearHours) * 100}%`}>
+                      <span class="bar-val">{y.hours}</span>
+                    </div>
+                    <span class="bar-year">{y.year}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {daily.length > 0 && (
+            <section class="chart-card">
+              <div class="chart-head">
+                <h3>{dailyMonthLabel} · 每日阅读时长</h3>
+                <span class="chart-meta">共 {totalDailyMinutes} 分钟 · {daily.length} 天</span>
+              </div>
+              <div class="year-chart daily-chart">
+                {daily.map((d) => (
+                  <div class="year-col" title={`${d.label}：${d.minutes} 分钟`}>
+                    <div class="year-bar" style={`height: ${(d.minutes / maxDailyMinutes) * 100}%`}>
+                      <span class="bar-val">{d.minutes >= 60 ? `${(d.minutes / 60).toFixed(1)}h` : `${d.minutes}m`}</span>
+                    </div>
+                    <span class="bar-year">{d.label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           <div class="shelf-books">
-            {books.map((b, i) => (
+            {booksProcessed.map((b, i) => (
               <details class="book-card" open={i === 0}>
                 <summary>
                   <span class="book-cover">
@@ -80,27 +160,48 @@ const statItems = [
                       {b.thoughtCount > 0 && <span class="tag-count">{b.thoughtCount} 条想法</span>}
                     </span>
                   </span>
-                  <span class="book-toggle" aria-hidden="true"></span>
+                  <span class="book-extra">
+                    {b.lastReadAt > 0 && <span class="book-lastread">最近 {fmtDate(b.lastReadAt)}</span>}
+                    <span class="book-toggle" aria-hidden="true"></span>
+                  </span>
                 </summary>
 
                 <div class="book-body">
-                  {b.highlights.length > 0 && (
-                    <section class="note-section">
-                      <h3>划线</h3>
-                      <ul class="hl-list">
-                        {b.highlights.map((h) => (
-                          <li>
-                            {h.chapter && <span class="hl-chapter">{h.chapter}</span>}
-                            <blockquote>{h.text}</blockquote>
-                          </li>
-                        ))}
-                      </ul>
-                    </section>
-                  )}
+                  <div class="note-tabs" role="tablist">
+                    <button class="note-tab active" type="button" data-tab="hl" role="tab" aria-selected="true">
+                      划线 <span class="tab-count">{b.highlightCount}</span>
+                    </button>
+                    <button class="note-tab" type="button" data-tab="th" role="tab" aria-selected="false" disabled={b.thoughtCount === 0}>
+                      想法 <span class="tab-count">{b.thoughtCount}</span>
+                    </button>
+                  </div>
 
-                  {b.thoughts.length > 0 && (
-                    <section class="note-section">
-                      <h3>想法</h3>
+                  <div class="note-panel hl-panel active" role="tabpanel">
+                    {b.highlightGroups.length > 0 ? (
+                      <div class="hl-chapters">
+                        {b.highlightGroups.map((g) => (
+                          <details class="hl-chapter">
+                            <summary>
+                              <span class="hl-chapter-title">{g.chapter}</span>
+                              <span class="hl-chapter-count">{g.items.length}</span>
+                            </summary>
+                            <ul class="hl-list">
+                              {g.items.map((h) => (
+                                <li>
+                                  <blockquote>{h.text}</blockquote>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        ))}
+                      </div>
+                    ) : (
+                      <p class="note-none">暂无划线</p>
+                    )}
+                  </div>
+
+                  <div class="note-panel th-panel" role="tabpanel" hidden>
+                    {b.thoughts.length > 0 ? (
                       <ul class="th-list">
                         {b.thoughts.map((t) => (
                           <li>
@@ -110,10 +211,10 @@ const statItems = [
                           </li>
                         ))}
                       </ul>
-                    </section>
-                  )}
-
-                  {b.highlights.length === 0 && b.thoughts.length === 0 && <p class="note-none">暂无导出的笔记内容</p>}
+                    ) : (
+                      <p class="note-none">暂无想法</p>
+                    )}
+                  </div>
                 </div>
               </details>
             ))}
@@ -125,15 +226,40 @@ const statItems = [
 </BaseLayout>
 
 <script>
+  // Tab 切换
+  document.querySelectorAll('.note-tabs').forEach((tabs) => {
+    const card = tabs.closest('.book-card');
+    if (!card) return;
+    const buttons = tabs.querySelectorAll<HTMLButtonElement>('.note-tab');
+    const hlPanel = card.querySelector<HTMLElement>('.hl-panel');
+    const thPanel = card.querySelector<HTMLElement>('.th-panel');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        const tab = btn.dataset.tab;
+        buttons.forEach((b) => {
+          const isActive = b === btn;
+          b.classList.toggle('active', isActive);
+          b.setAttribute('aria-selected', String(isActive));
+        });
+        hlPanel?.classList.toggle('active', tab === 'hl');
+        thPanel?.classList.toggle('active', tab === 'th');
+        if (hlPanel) hlPanel.hidden = tab !== 'hl';
+        if (thPanel) thPanel.hidden = tab !== 'th';
+      });
+    });
+  });
+
+  // 同步按钮
   const syncBtn = document.getElementById('sync-btn');
   const syncStatus = document.getElementById('sync-status');
   const REPO_KEY = 'gh_repo';
   const TOKEN_KEY = 'gh_token';
 
-  function setStatus(msg, ok) {
+  function setStatus(msg: string, ok?: boolean) {
     if (!syncStatus) return;
     syncStatus.textContent = msg;
-    syncStatus.style.color = ok ? 'var(--accent)' : '#b4453a';
+    (syncStatus as HTMLElement).style.color = ok ? 'var(--accent)' : '#b4453a';
   }
 
   syncBtn?.addEventListener('click', async () => {
@@ -174,7 +300,7 @@ const statItems = [
         const e = await res.json().catch(() => ({}));
         setStatus('触发失败：' + (e.message || res.status));
       }
-    } catch (err) {
+    } catch (err: any) {
       setStatus('网络错误：' + err.message);
     } finally {
       syncBtn.disabled = false;

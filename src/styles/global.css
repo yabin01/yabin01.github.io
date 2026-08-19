@@ -1296,6 +1296,20 @@ img {
   flex: 1;
 }
 
+.book-extra {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.book-lastread {
+  font-size: 0.74rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
 .book-title {
   font-family: var(--font-serif);
   font-size: 1.05rem;
@@ -1456,8 +1470,241 @@ img {
   margin: 1rem 0 0.5rem;
 }
 
+/* ---------- 每年阅读时长柱状图 ---------- */
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+
+.chart-head h3 {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.chart-meta {
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.year-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 180px;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+
+.year-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  position: relative;
+  min-width: 0;
+}
+
+.year-bar {
+  width: 100%;
+  max-width: 38px;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent-soft) 100%);
+  border-radius: 5px 5px 0 0;
+  position: relative;
+  transition: opacity 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 0.3rem;
+  min-height: 2px;
+}
+
+.year-col:hover .year-bar {
+  opacity: 0.85;
+}
+
+.bar-val {
+  position: absolute;
+  top: -1.2rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.bar-year {
+  position: absolute;
+  bottom: -1.4rem;
+  font-size: 0.72rem;
+  color: var(--text-light);
+  white-space: nowrap;
+}
+
+/* 当月每日柱状图（柱子更密） */
+.daily-chart {
+  height: 150px;
+  gap: 0.3rem;
+}
+
+.daily-chart .year-bar {
+  max-width: 18px;
+}
+
+.daily-chart .bar-val {
+  font-size: 0.62rem;
+}
+
+.daily-chart .bar-year {
+  font-size: 0.66rem;
+}
+
+/* ---------- Tab 切换 ---------- */
+.note-tabs {
+  display: inline-flex;
+  gap: 0;
+  margin: 1rem 0 0.8rem;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+.note-tab {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  color: var(--text-light);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.note-tab:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.note-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.note-tab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tab-count {
+  font-size: 0.78rem;
+  padding: 0.05rem 0.45rem;
+  background: var(--bg-subtle);
+  border-radius: 999px;
+  color: var(--text-light);
+}
+
+.note-tab.active .tab-count {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.note-panel[hidden] {
+  display: none !important;
+}
+
+/* ---------- 划线章节折叠 ---------- */
+.hl-chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.hl-chapter {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-subtle);
+}
+
+.hl-chapter summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: background 0.15s ease;
+}
+
+.hl-chapter summary::-webkit-details-marker {
+  display: none;
+}
+
+.hl-chapter summary:hover {
+  background: var(--surface);
+}
+
+.hl-chapter-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hl-chapter-count {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.55rem;
+  background: var(--surface);
+  border-radius: 999px;
+  color: var(--text-light);
+  border: 1px solid var(--border);
+}
+
+.hl-chapter[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.hl-chapter[open] .hl-chapter-count {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: transparent;
+}
+
+.hl-chapter .hl-list {
+  padding: 0.6rem 0.9rem 0.8rem;
+  gap: 0.5rem;
+}
+
+.hl-chapter .hl-list li {
+  gap: 0;
+}
+
 @media (max-width: 900px) {
   .shelf-stats {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .year-chart {
+    height: 140px;
   }
 }

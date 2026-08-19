@@ -120,10 +120,22 @@ async function fetchReadData() {
     const totalSeconds = Object.values(times).reduce((s, v) => s + (Number(v) || 0), 0);
     const readMinutes = Math.round(totalSeconds / 60);
     const days = data?.totalReadDays ?? data?.readDays ?? 0;
-    return { readMinutes, readDays: days };
+    return { readMinutes, readDays: days, readTimes: times };
   } catch (e) {
     console.warn(`阅读统计拉取失败: ${e.message}`);
-    return { readMinutes: 0, readDays: 0 };
+    return { readMinutes: 0, readDays: 0, readTimes: {} };
+  }
+}
+
+// 5. 当月每日阅读时长（mode=monthly 返回本月每天秒数，key=当天 0 点时间戳）
+async function fetchDailyRead() {
+  try {
+    const data = await call('/readdata/detail', { mode: 'monthly' });
+    const times = data?.readTimes || {};
+    return times;
+  } catch (e) {
+    console.warn(`每日阅读统计拉取失败: ${e.message}`);
+    return {};
   }
 }
 
@@ -132,7 +144,8 @@ async function main() {
   const { books: notebooks, total } = await fetchNotebooks();
   console.log(`有笔记的书 ${notebooks.length} 本（totalBookCount=${total}）`);
 
-  const { readMinutes, readDays } = await fetchReadData();
+  const { readMinutes, readDays, readTimes } = await fetchReadData();
+  const dailyReadTimes = await fetchDailyRead();
 
   const books = [];
   let totalHighlights = 0;
@@ -147,6 +160,9 @@ async function main() {
     totalHighlights += highlights.length;
     totalThoughts += thoughts.length;
     if (nb.markedStatus === 1) finished++;
+    // 最近阅读时间：取该书所有划线和想法 createTime 的最大值（无则 0）
+    const maxTs = (arr) => arr.reduce((m, x) => Math.max(m, x.createTime || 0), 0);
+    const lastReadAt = Math.max(maxTs(highlights), maxTs(thoughts));
     books.push({
       bookId,
       title: info.title || '未命名',
@@ -156,6 +172,7 @@ async function main() {
       progress: Math.round((nb.readingProgress || 0) * 100),
       highlightCount: nb.noteCount ?? highlights.length,
       thoughtCount: nb.reviewCount ?? thoughts.length,
+      lastReadAt,
       highlights,
       thoughts,
     });
@@ -174,13 +191,15 @@ async function main() {
       thoughts: totalThoughts,
       readMinutes,
       readDays,
+      yearlyReadTimes: readTimes, // 按年秒数，key=年份时间戳
+      dailyReadTimes, // 当月每日秒数，key=当天 0 点时间戳
     },
-    books: books.sort((a, b) => b.highlightCount + b.thoughtCount - (a.highlightCount + a.thoughtCount)),
+    books: books.sort((a, b) => (b.lastReadAt || 0) - (a.lastReadAt || 0)),
   };
 
-  writeFileSync(new URL('../src/data/bookshelf.json', import.meta.url), JSON.stringify(result, null, 2), 'utf-8');
+  writeFileSync(new URL('../src/data/weread.json', import.meta.url), JSON.stringify(result, null, 2), 'utf-8');
   console.log(`\n== 完成 == 书${result.stats.totalBooks} 划线${totalHighlights} 想法${totalThoughts}`);
-  console.log('已写入 src/data/bookshelf.json');
+  console.log('已写入 src/data/weread.json');
 }
 
 main().catch((e) => {

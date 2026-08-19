@@ -3,9 +3,9 @@
   "stats": {
     "totalBooks": 206,
     "finishedBooks": 28,
-    "highlights": 8034,
+    "highlights": 8035,
     "thoughts": 240,
-    "readMinutes": 28515,
+    "readMinutes": 28519,
     "readDays": 919
   },
   "books": [
@@ -30538,7 +30538,7 @@
       "cover": "https://cdn.weread.qq.com/weread/cover/96/YueWen_30472761/t6_YueWen_30472761.jpg",
       "finished": false,
       "progress": 100,
-      "highlightCount": 95,
+      "highlightCount": 96,
       "thoughtCount": 2,
       "highlights": [
         {
@@ -31015,6 +31015,11 @@
           "chapter": "秦并六国（二）",
           "text": "常山：即恒山。古北岳恒山即今大茂山，位于今河北阜平、涞源、唐县交界处，明清之后北岳恒山始指今山西浑源恒山",
           "createTime": 1787072605
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "诸侯闻仪与秦王有隙，皆畔衡，复合从",
+          "createTime": 1787116523
         }
       ],
       "thoughts": [

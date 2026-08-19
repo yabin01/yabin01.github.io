@@ -229,6 +229,95 @@ main.container {
 .post-tags li {
   color: var(--text-muted);
 }
+.post-tags a {
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.post-tags a:hover {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom-color: var(--accent-soft);
+}
+
+/* ---------- 标签页 ---------- */
+.tag-cloud {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  padding: 0;
+  margin: 0;
+}
+.tag-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.92rem;
+  background: var(--bg);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.tag-chip:hover {
+  text-decoration: none;
+  border-color: var(--accent-soft);
+  color: var(--accent);
+}
+.tag-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ---------- 归档页 ---------- */
+.archive-year {
+  margin-bottom: 2.2rem;
+}
+.archive-year-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+.archive-month {
+  margin: 0 0 1.2rem;
+}
+.archive-month-title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 1rem 0 0.4rem;
+}
+.archive-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.archive-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding-block: 0.35rem;
+}
+.archive-date {
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.archive-link {
+  color: var(--text);
+  font-size: 0.98rem;
+}
+.archive-link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
 
 /* ---------- 分类页 ---------- */
 .cat-header {

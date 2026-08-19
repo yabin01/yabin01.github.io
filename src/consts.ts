@@ -17,6 +17,8 @@ export const NAV: { label: string; href: string }[] = [
   { label: '交易', href: '/category/trading' },
   { label: '读书', href: '/category/reading' },
   { label: '随笔', href: '/category/essays' },
+  { label: '标签', href: '/tags' },
+  { label: '归档', href: '/archive' },
   { label: '关于', href: '/about' },
 ];
 

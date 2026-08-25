@@ -438,7 +438,7 @@ import '../styles/global.css';
         const fm = [
           '---',
           `title: ${title}`,
-          `description: ${description}`,
+          ...(description ? [`description: ${description}`] : []),
           `pubDate: ${pubDate}`,
           `category: ${category}`,
           `tags: ${tagsStr}`,

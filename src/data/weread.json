@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-19",
+  "updated": "2026-08-25",
   "stats": {
-    "totalBooks": 206,
+    "totalBooks": 207,
     "finishedBooks": 28,
-    "highlights": 8035,
+    "highlights": 8045,
     "thoughts": 240,
-    "readMinutes": 28519,
-    "readDays": 919,
+    "readMinutes": 28649,
+    "readDays": 925,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,7 +16,7 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 869645
+      "1767196800": 877485
     },
     "dailyReadTimes": {
       "1785513600": 5376,
@@ -37,7 +37,13 @@
       "1786809600": 2605,
       "1786896000": 3973,
       "1786982400": 9681,
-      "1787068800": 483
+      "1787068800": 769,
+      "1787155200": 1258,
+      "1787241600": 496,
+      "1787328000": 380,
+      "1787414400": 298,
+      "1787500800": 1867,
+      "1787587200": 3255
     }
   },
   "books": [
@@ -48,9 +54,9 @@
       "cover": "https://cdn.weread.qq.com/weread/cover/96/YueWen_30472761/t6_YueWen_30472761.jpg",
       "finished": false,
       "progress": 100,
-      "highlightCount": 96,
+      "highlightCount": 105,
       "thoughtCount": 2,
-      "lastReadAt": 1787116523,
+      "lastReadAt": 1787666909,
       "highlights": [
         {
           "chapter": "前言",
@@ -531,6 +537,51 @@
           "chapter": "秦并六国（二）",
           "text": "诸侯闻仪与秦王有隙，皆畔衡，复合从",
           "createTime": 1787116523
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "六年，秦初置丞相，以樗里疾为右丞相。",
+          "createTime": 1787178785
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "魏文侯令乐羊将而攻中山，三年而拔之。反而论功，文侯示之谤书一箧",
+          "createTime": 1787179012
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "鲁人有与曾参同姓名者杀人，人告其母，其母织自若也。及三人告之，其母投杼下机，逾墙而走",
+          "createTime": 1787198972
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "秦樗里疾卒，以赵人楼缓为丞相。",
+          "createTime": 1787360620
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "善乎荀卿论之曰：“夫道，善用之则百里之地可以独立，不善用之则楚六千里而为仇人役。",
+          "createTime": 1787640342
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "故人主不务得道而广有其势，是其所以危也",
+          "createTime": 1787640346
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "弟子以韩非、李斯和汉初传授《诗经》之浮丘伯最著名。对先秦哲学进行总结，提出“天行有常，不为尧存，不为桀亡”，指出天无意志，强调“制天命而用之”的人定胜天思想",
+          "createTime": 1787640436
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "吾非悲刖也，悲夫宝玉而题之以石，贞士而名之以诳",
+          "createTime": 1787666060
+        },
+        {
+          "chapter": "秦并六国（二）",
+          "text": "夫以地事秦，犹抱薪救火，薪不尽，火不灭。",
+          "createTime": 1787666909
         }
       ],
       "thoughts": [
@@ -545,6 +596,25 @@
           "createTime": 1787041987
         }
       ]
+    },
+    {
+      "bookId": "3300217595",
+      "title": "14个王朝的最后10年",
+      "author": "冯敏飞",
+      "cover": "https://cdn.weread.qq.com/weread/cover/23/cpplatform_5aqkm4wyzihbqmxlynmw4y/t6_cpplatform_5aqkm4wyzihbqmxlynmw4y1783506377.jpg",
+      "finished": false,
+      "progress": 400,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1787534859,
+      "highlights": [
+        {
+          "chapter": "前因：民怨日益增多",
+          "text": "戏剧性的是：2000多年来，儒家无不强烈抨击秦始皇暴政，批得体无完肤，却又无不竭力维护他创立的帝制",
+          "createTime": 1787534859
+        }
+      ],
+      "thoughts": []
     },
     {
       "bookId": "3300156906",

@@ -8,9 +8,10 @@ permissions:
   pages: write
   id-token: write
 
+# 独立并发组，避免与 deploy.yml 的 group:pages 互相取消
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: sync-weread
+  cancel-in-progress: false
 
 jobs:
   sync-and-deploy:

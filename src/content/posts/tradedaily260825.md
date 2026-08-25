@@ -3,7 +3,7 @@ title: 复盘：恐惧和贪婪都是盈利的敌人
 description: 2026年8月25日看盘日记
 pubDate: 2026-08-25
 category: 交易
-tags: ["缠论", "交易", "盈利", "ETHUSDT"]
+tags: ["缠论", "交易", "盈利", "ETHUSDT", "复盘"]
 draft: false
 ---
 ### 交易两问

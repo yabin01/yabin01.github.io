@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-25",
+  "updated": "2026-08-28",
   "stats": {
-    "totalBooks": 207,
-    "finishedBooks": 28,
-    "highlights": 8045,
+    "totalBooks": 211,
+    "finishedBooks": 29,
+    "highlights": 8056,
     "thoughts": 240,
-    "readMinutes": 28649,
-    "readDays": 925,
+    "readMinutes": 28893,
+    "readDays": 928,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,7 +16,7 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 877485
+      "1767196800": 892092
     },
     "dailyReadTimes": {
       "1785513600": 5376,
@@ -43,10 +43,89 @@
       "1787328000": 380,
       "1787414400": 298,
       "1787500800": 1867,
-      "1787587200": 3255
+      "1787587200": 3337,
+      "1787673600": 531,
+      "1787760000": 12973,
+      "1787846400": 1021
     }
   },
   "books": [
+    {
+      "bookId": "3300068712",
+      "title": "文艺批评文集（罗兰·巴尔特文集）",
+      "author": "[法]罗兰·巴尔特",
+      "cover": "https://cdn.weread.qq.com/weread/cover/98/cpplatform_ayxr33qe3zmthagwumxsfa/t6_cpplatform_ayxr33qe3zmthagwumxsfa1692790340.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1787910379,
+      "highlights": [
+        {
+          "chapter": "总序",
+          "text": "罗兰·巴尔特(1915—1980)是已故法兰西学院讲座教授，法国当代著名文学思想家和理论家，结构主义运动主要代表者之一，并被学界公认为法国文学符号学和法国新批评的创始人",
+          "createTime": 1787910379
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "23796318",
+      "title": "要焚毁萨德吗",
+      "author": "[法]西蒙娜·德·波伏瓦",
+      "cover": "https://cdn.weread.qq.com/weread/cover/3/yuewen_23796318/t6_yuewen_237963181754886169.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1787828461,
+      "highlights": [
+        {
+          "chapter": "要焚毁萨德吗",
+          "text": "我们关注他是由于他所开创的在自我这两个侧面[插图]之间的关联。",
+          "createTime": 1787828461
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "3300076625",
+      "title": "昨日的世界：一个欧洲人的回忆（果麦经典）",
+      "author": "斯蒂芬·茨威格",
+      "cover": "https://cdn.weread.qq.com/weread/cover/14/cpplatform_d9qnole3xewwud7ybg6oes/t6_cpplatform_d9qnole3xewwud7ybg6oes1698998643.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1787819031,
+      "highlights": [
+        {
+          "chapter": "告别信",
+          "text": "在我看来，精神工作是最纯粹的快乐，个人自由是世间最崇高的福祉。",
+          "createTime": 1787819031
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "3300198487",
+      "title": "书法备览：精校完整版（套装19册）（传世藏书）",
+      "author": "尹小林 等",
+      "cover": "https://cdn.weread.qq.com/weread/cover/27/cpplatform_ghgyqqqv2783jx6k6aoodj/t6_cpplatform_ghgyqqqv2783jx6k6aoodj1773654515.jpg",
+      "finished": true,
+      "progress": 0,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1787818887,
+      "highlights": [
+        {
+          "chapter": "卷一",
+          "text": "吾尽心精作亦久，寻诸旧书，惟钟、张故为绝伦。其余为是小佳，不足在意。去此二贤，仆书次之",
+          "createTime": 1787818887
+        }
+      ],
+      "thoughts": []
+    },
     {
       "bookId": "30472761",
       "title": "通鉴纪事本末（注译本·全42卷）（全本全注全译）",
@@ -54,9 +133,9 @@
       "cover": "https://cdn.weread.qq.com/weread/cover/96/YueWen_30472761/t6_YueWen_30472761.jpg",
       "finished": false,
       "progress": 100,
-      "highlightCount": 105,
+      "highlightCount": 112,
       "thoughtCount": 2,
-      "lastReadAt": 1787666909,
+      "lastReadAt": 1787800681,
       "highlights": [
         {
           "chapter": "前言",
@@ -582,6 +661,41 @@
           "chapter": "秦并六国（二）",
           "text": "夫以地事秦，犹抱薪救火，薪不尽，火不灭。",
           "createTime": 1787666909
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "且死者，人之所必不免也，苟可以少有补于秦而死，此臣之所大愿也",
+          "createTime": 1787743584
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "今夫韩、魏，中国之处而天下之枢也，王若欲霸，必亲中国以为天下枢，以威楚、赵[1",
+          "createTime": 1787743757
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "赵王以告平阳君豹，对曰：“圣人甚祸无故之利。”王曰：“人乐吾德，何谓无故？",
+          "createTime": 1787798723
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "昔伊挚在夏，吕望在商，而二国不治。岂伊、吕之不欲哉？势不可也",
+          "createTime": 1787799811
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "。先人有言：‘燕雀处屋，子母相哺，呴呴焉相乐也，自以为安矣。灶突炎上，栋宇将焚，燕雀颜不变，不知祸之将及己也。",
+          "createTime": 1787799932
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "魏齐穷，抵虞卿，虞卿弃相印，与魏齐偕亡",
+          "createTime": 1787800083
+        },
+        {
+          "chapter": "秦并六国（三）",
+          "text": "文王闻之，喟然而叹，故拘之牖里之库百日，欲令之死",
+          "createTime": 1787800681
         }
       ],
       "thoughts": [
@@ -2716,7 +2830,7 @@
     },
     {
       "bookId": "3300020163",
-      "title": "我的阿勒泰（马伊琍、周依然、于适主演同名电视剧原著）",
+      "title": "我的阿勒泰（中国版权金奖、“我的阿勒泰”同名电视剧）",
       "author": "李娟",
       "cover": "https://cdn.weread.qq.com/weread/cover/31/cpplatform_fy7wyg2acrhxq1vu4yvs9y/t6_cpplatform_fy7wyg2acrhxq1vu4yvs9y1714307419.jpg",
       "finished": false,

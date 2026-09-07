@@ -5,56 +5,36 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'posts'>;
-  showThumb?: boolean;
+  index?: number;
+  total?: number;
 }
-const { post, showThumb = true } = Astro.props;
+const { post, index, total } = Astro.props;
 const meta = CATEGORY_META[post.data.category];
 
-// 分类对应图标（用 SVG path）
-const catIcons: Record<string, string> = {
-  交易: 'M3 17 9 11l4 4 8-8',
-  读书: 'M2 4h7a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2zM22 4h-7a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h8z',
-  随笔: 'M12 19l7-7 3 3-7 7H12v-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z',
-};
+// 编辑级编号：按总篇数动态补零（8 篇 → 1~8；100 篇 → 001~100）
+const pad = typeof total === 'number' ? String(total).length : 0;
+const num =
+  typeof index === 'number'
+    ? String(index + 1).padStart(pad, '0')
+    : '';
 ---
 
-<article class="post-card">
-  {
-    showThumb && (
-      <a class="post-thumb" href={`/posts/${post.id}/`} aria-hidden="true">
-        {post.data.cover ? (
-          <img src={post.data.cover} alt={post.data.title} loading="lazy" />
-        ) : (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d={catIcons[post.data.category] || 'M12 5v14M5 12h14'}></path>
-          </svg>
-        )}
-      </a>
-    )
-  }
-  <div class="post-card-body">
-    <div class="post-card-meta">
-      <a class="post-cat" href={`/category/${meta.slug}`}>{post.data.category}</a>
-      <FormattedDate date={post.data.pubDate} />
-    </div>
-    <h2 class="post-title">
+<article class="editorial-item">
+  <div class="editorial-num" aria-hidden="true">{num}</div>
+  <div class="editorial-body">
+    <h3 class="editorial-title">
       <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-    </h2>
+    </h3>
     {
       post.data.description && (
-        <p class="post-desc">{post.data.description}</p>
-      )
-    }
-    {
-      post.data.tags.length > 0 && (
-        <ul class="post-tags">
-          {post.data.tags.map((t) => (
-            <li>
-              <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
-            </li>
-          ))}
-        </ul>
+        <p class="editorial-desc">{post.data.description}</p>
       )
     }
   </div>
+  <div class="editorial-meta">
+    <FormattedDate date={post.data.pubDate} />
+  </div>
+  <a class="editorial-cat" href={`/category/${meta.slug}`}>
+    {post.data.category}
+  </a>
 </article>

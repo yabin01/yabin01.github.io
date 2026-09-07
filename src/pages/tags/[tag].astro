@@ -23,9 +23,9 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 ---
 
-<BaseLayout title={`#${tag}`} description={`标签「${tag}」下的文章`}>
+<BaseLayout title={tag} description={`标签「${tag}」下的文章`}>
   <header class="cat-header">
-    <h1>#{tag}</h1>
+    <h1>{tag}</h1>
     <p>共 {posts.length} 篇</p>
     <p class="cat-count"><a href="/tags/">← 全部标签</a></p>
   </header>

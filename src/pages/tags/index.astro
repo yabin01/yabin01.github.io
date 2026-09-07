@@ -29,7 +29,7 @@ const tags = [...tagCount.entries()].sort(
         {tags.map(([tag, count]) => (
           <li>
             <a class="tag-chip" href={`/tags/${encodeURIComponent(tag)}/`}>
-              #{tag}
+              {tag}
               <span class="tag-count">{count}</span>
             </a>
           </li>

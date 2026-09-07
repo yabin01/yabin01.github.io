@@ -9,35 +9,13 @@ import '../styles/global.css';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>写作台 · 清远日新斋</title>
-    <script is:inline>
-      (function () {
-        const saved = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', saved);
-      })();
-    </script>
+    <title>写作台 · ChingYuan'Blog</title>
   </head>
   <body>
     <header class="write-topbar">
       <div class="write-topbar-inner">
         <a href="/" class="write-back">← 返回博客</a>
-        <span class="write-title-mini">写作台 · 清远日新斋</span>
-        <button id="theme-toggle" class="topbar-theme write-theme-btn" title="切换日间/夜间模式" aria-label="切换日间/夜间模式">
-          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
-          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
-        </button>
+        <span class="write-title-mini">写作台 · ChingYuan'Blog</span>
       </div>
     </header>
 
@@ -145,8 +123,14 @@ import '../styles/global.css';
     </div>
 
     <style>
+      /* —— 兼容新 token：把旧名桥接到 global.css 当前变量 —— */
+      :root {
+        --topbar-bg: var(--topbar);
+        --topbar-muted: var(--topbar-text-muted);
+        --topbar-height: var(--nav-h);
+      }
       body {
-        background: var(--bg);
+        background: var(--canvas);
       }
       .write-topbar {
         position: sticky;
@@ -159,22 +143,25 @@ import '../styles/global.css';
         height: var(--topbar-height);
         display: flex;
         align-items: center;
-        justify-content: space-between;
         padding: 0 1.25rem;
+        gap: 24px;
       }
       .write-back,
       .write-title-mini {
         color: #fff;
         font-size: 0.9rem;
+        text-decoration: none;
+      }
+      .write-back {
+        font-weight: 500;
+        font-family: var(--font-nav);
       }
       .write-back:hover {
-        color: var(--accent);
+        opacity: 0.78;
       }
       .write-title-mini {
         color: var(--topbar-muted);
-      }
-      .write-theme-btn {
-        border-color: rgba(255, 255, 255, 0.15);
+        margin: 0 auto;
       }
       .write-wrap {
         max-width: 70rem;
@@ -525,8 +512,10 @@ import '../styles/global.css';
       }
 
       async function del() {
-        if (!currentPath || !currentSha) return status('没有可删除的文章', 'err');
+        if (!tokenEl.value.trim()) return status('请先填写并保存 GitHub Token', 'err');
+        if (!currentPath || !currentSha) return status('没有可删除的文章（请先在列表选择要删除的文章）', 'err');
         if (!confirm('确定删除该文章？此操作不可撤销。')) return;
+        status('删除中…');
         const res = await api(`/repos/${repoEl.value.trim()}/contents/${currentPath}`, {
           method: 'DELETE',
           body: JSON.stringify({
@@ -536,11 +525,16 @@ import '../styles/global.css';
           }),
         });
         if (res.ok) {
-          status('已删除', 'ok');
+          status('已删除 ✓ GitHub Actions 将自动部署', 'ok');
           resetForm();
           await loadPosts();
         } else {
-          status('删除失败', 'err');
+          const e = await res.json().catch(() => ({}));
+          let msg = e.message || `HTTP ${res.status}`;
+          if (res.status === 404) msg = '令牌权限不足（需 contents 写权限）或文章不存在：' + msg;
+          if (res.status === 409) msg = '文章内容已变动，请刷新列表后重新选择再删：' + msg;
+          if (res.status === 401) msg = '令牌无效或已过期：' + msg;
+          status('删除失败：' + msg, 'err');
         }
       }
 
@@ -574,16 +568,6 @@ import '../styles/global.css';
       renderPreview();
       if (tokenEl.value.trim()) loadPosts();
 
-      // 主题切换
-      const themeBtn = $('theme-toggle');
-      if (themeBtn) {
-        themeBtn.addEventListener('click', function () {
-          const current = document.documentElement.getAttribute('data-theme') || 'light';
-          const next = current === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', next);
-          localStorage.setItem('theme', next);
-        });
-      }
     </script>
   </body>
 </html>

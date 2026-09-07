@@ -61,7 +61,7 @@ const topTags = [...tagCount.entries()]
       {
         topTags.map(([tag, count]) => (
           <a class="aside-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
-            #{tag}
+            {tag}
             <span class="count">{count}</span>
           </a>
         ))

@@ -1,10 +1,10 @@
 // 站点全局配置：改这里即可调整站名、导航、分类与评论。
 
 export const SITE = {
-  title: '清远日新斋',
+  title: "ChingYuan'Blog",
   tagline: '交易 · 读书 · 随笔',
   description:
-    '清远日新斋 —— 清远先生的个人博客，记录交易复盘、分享历史与哲学，缠论学习笔记以及日常随笔。',
+    "ChingYuan'Blog —— 清远先生的个人博客，记录交易复盘、分享历史与哲学，缠论学习笔记以及日常随笔。",
   author: '清远先生',
   lang: 'zh-CN',
   url: 'https://yabin01.github.io',

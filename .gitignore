@@ -14,3 +14,12 @@ npm-debug.log*
 Thumbs.db
 # WorkBuddy 工作区数据（不要提交）
 .workbuddy/
+# 草稿/旧数据/AI 生成图（不要提交）
+src/data-lock/
+src/data-old/
+generated-images/
+# 旧构建产物残留
+dist-d/
+dist-fix/
+dist-g/
+dist-old2/

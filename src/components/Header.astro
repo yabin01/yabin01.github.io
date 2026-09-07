@@ -1,45 +1,45 @@
 ---
 import { SITE } from '../consts';
+
+const nav = [
+  { label: '首页', href: '/' },
+  { label: '标签', href: '/tags' },
+  { label: '书架', href: '/bookshelf' },
+  { label: '归档', href: '/archive' },
+  { label: '关于', href: '/about' },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+
+// 站点 wordmark 的字符：取 ChingYuan 的特色字母 Y
+const initial = 'Y';
 ---
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="topbar-left">
-      <a href="/" class="topbar-logo">{SITE.title}</a>
-      <span class="topbar-tagline">{SITE.tagline}</span>
-    </div>
-    <div class="topbar-right">
-      <a href="/bookshelf" class="topbar-shelf" title="我的书架">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-        </svg>
-        我的书架
-      </a>
-      <a href="/rss/" class="topbar-shelf" title="资讯聚合阅读">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 11a9 9 0 0 1 9 9"></path>
-          <path d="M4 4a16 16 0 0 1 16 16"></path>
-          <circle cx="5" cy="19" r="1"></circle>
-        </svg>
-        资讯
-      </a>
-      <button id="theme-toggle" class="topbar-theme" title="切换日间/夜间模式" aria-label="切换日间/夜间模式">
-        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"></circle>
-          <line x1="12" y1="1" x2="12" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="23"></line>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-          <line x1="1" y1="12" x2="3" y2="12"></line>
-          <line x1="21" y1="12" x2="23" y2="12"></line>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-        </svg>
-        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-    </div>
+<header class="site-nav">
+  <div class="site-nav-inner">
+    <a href="/" class="site-brand" aria-label={`${SITE.title} 首页`}>
+      <span class="brand-mark">{initial}</span>
+      <span>{SITE.title}</span>
+    </a>
+    <nav class="site-nav-links" aria-label="主导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[isActive(item.href) ? 'active' : '']}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a href="/search" class="nav-search" aria-label="搜索">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+    </a>
   </div>
 </header>

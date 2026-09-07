@@ -47,10 +47,10 @@ const meta = CATEGORY_META[post.data.category];
 
     {
       post.data.tags.length > 0 && (
-        <ul class="post-tags" style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <ul class="post-tags">
           {post.data.tags.map((t) => (
             <li>
-              <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
+              <a href={`/tags/${encodeURIComponent(t)}/`}>{t}</a>
             </li>
           ))}
         </ul>

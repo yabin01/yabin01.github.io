@@ -7,17 +7,21 @@ import { CATEGORY_META, SITE } from '../consts';
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-
-// 顶部两张大卡片
-const hero = posts.slice(0, 2);
-// 主列表：剩余
-const rest = posts.slice(2);
+const total = posts.length;
+const year = new Date().getFullYear();
 ---
 
 <BaseLayout>
-  <!-- 胶囊分类筛选 -->
+  <section class="home-hero">
+    <h1>{SITE.title}</h1>
+    <p>
+      {SITE.tagline} —— 一个安静的思考记录处。缠论复盘、读书笔记、偶尔随笔。
+    </p>
+    <p class="hero-meta">{year} · 共 {total} 篇 · 持续更新</p>
+  </section>
+
   <nav class="category-filter" aria-label="分类筛选">
-    <a class="filter-chip active" href="/">ALL</a>
+    <a class="filter-chip active" href="/">全部</a>
     {
       Object.entries(CATEGORY_META).map(([category, meta]) => (
         <a class="filter-chip" href={`/category/${meta.slug}`}>
@@ -25,43 +29,11 @@ const rest = posts.slice(2);
         </a>
       ))
     }
-    <a class="filter-chip" href="/tags">#标签</a>
-    <a class="filter-chip" href="/archive">归档</a>
   </nav>
 
-  <!-- 大图卡片 -->
-  {
-    hero.length > 0 && (
-      <div class="hero-grid">
-        {hero.map((post) => {
-          const catClass = CATEGORY_META[post.data.category]?.slug ?? '';
-          const style = post.data.cover
-            ? `background-image:url('${post.data.cover}');background-size:cover;background-position:center;`
-            : undefined;
-          return (
-            <a class={`hero-card ${catClass}`} href={`/posts/${post.id}/`} style={style}>
-              <div class="hero-card-content">
-                <span class="post-cat">{post.data.category}</span>
-                <h3>{post.data.title}</h3>
-                <p>{post.data.description || ''}</p>
-                <time>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    )
-  }
-
-  <!-- 必读 / 主列表 -->
-  <h2 class="section-title">最新文章</h2>
-  {
-    rest.length > 0 ? (
-      <div class="post-list">
-        {rest.map((post) => <PostCard post={post} />)}
-      </div>
-    ) : (
-      hero.length === 0 && <p style="color:var(--text-muted)">还没有文章。</p>
-    )
-  }
+  <div class="editorial-list">
+    {posts.map((post, i) => (
+      <PostCard post={post} index={i} total={total} />
+    ))}
+  </div>
 </BaseLayout>

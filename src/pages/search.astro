@@ -1,0 +1,219 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const index = posts.map((p) => ({
+  title: p.data.title,
+  description: p.data.description ?? '',
+  tags: p.data.tags ?? [],
+  url: `/posts/${p.slug}/`,
+  date: p.data.pubDate.toISOString().slice(0, 10),
+}));
+---
+
+<BaseLayout title="搜索" description="站内文章搜索">
+  <header class="cat-header">
+    <h1>搜索</h1>
+    <p>输入关键词，实时检索全部 {index.length} 篇文章的标题、摘要与标签。</p>
+  </header>
+
+  <div class="search-box">
+    <input
+      type="search"
+      id="search-input"
+      class="search-input"
+      placeholder="搜索文章、标签、关键词…"
+      autocomplete="off"
+      autofocus
+      aria-label="搜索"
+    />
+    <p class="search-meta" id="search-meta"></p>
+  </div>
+
+  <ul class="search-results" id="search-results"></ul>
+
+  <script type="application/json" id="search-data" set:html={JSON.stringify(index)}></script>
+
+  <script>
+    const dataEl = document.getElementById('search-data') as HTMLScriptElement;
+    const input = document.getElementById('search-input') as HTMLInputElement;
+    const results = document.getElementById('search-results') as HTMLUListElement;
+    const meta = document.getElementById('search-meta') as HTMLParagraphElement;
+
+    const items: Array<{
+      title: string;
+      description: string;
+      tags: string[];
+      url: string;
+      date: string;
+    }> = JSON.parse(dataEl.textContent || '[]');
+
+    const esc = (s: string) =>
+      s.replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string)
+      );
+
+    const highlight = (text: string, q: string) => {
+      const safe = esc(text);
+      if (!q) return safe;
+      const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return safe.replace(re, '<mark>$1</mark>');
+    };
+
+    const render = (list: typeof items, q: string) => {
+      results.innerHTML = list
+        .map(
+          (it) => `
+        <li class="search-result">
+          <a href="${it.url}" class="search-result-title">${highlight(it.title, q)}</a>
+          ${it.description ? `<p class="search-result-desc">${highlight(it.description, q)}</p>` : ''}
+          <div class="search-result-meta">
+            <span class="search-result-date">${it.date}</span>
+            ${
+              it.tags.length
+                ? `<span class="search-result-tags">${it.tags
+                    .map((t) => `#${esc(t)}`)
+                    .join(' ')}</span>`
+                : ''
+            }
+          </div>
+        </li>`
+        )
+        .join('');
+      if (!list.length) {
+        results.innerHTML = `<li class="search-empty">没有匹配「${esc(q)}」的文章。</li>`;
+      }
+      meta.textContent = q
+        ? `找到 ${list.length} 条结果`
+        : `共 ${items.length} 篇文章`;
+    };
+
+    const run = () => {
+      const q = input.value.trim().toLowerCase();
+      if (!q) {
+        render(items, '');
+        return;
+      }
+      const hits = items.filter((it) => {
+        const hay = `${it.title} ${it.description} ${it.tags.join(' ')}`.toLowerCase();
+        return hay.includes(q);
+      });
+      render(hits, input.value.trim());
+    };
+
+    input.addEventListener('input', run);
+    // 初始展示全部文章
+    render(items, '');
+    input.focus();
+  </script>
+</BaseLayout>
+
+<style>
+  .search-box {
+    max-width: 720px;
+    margin: 0 auto 28px;
+  }
+
+  .search-input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--font-sans);
+    font-size: 17px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 14px 18px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .search-input:focus {
+    border-color: var(--text);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
+  }
+
+  .search-meta {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 12px 2px 0;
+  }
+
+  .search-results {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 720px;
+  }
+
+  .search-result {
+    padding: 20px 0;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .search-result:first-child {
+    border-top: none;
+  }
+
+  .search-result-title {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+
+  .search-result-title:hover {
+    color: var(--link);
+  }
+
+  .search-result-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 8px 0 0;
+  }
+
+  .search-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin-top: 10px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .search-result-tags {
+    letter-spacing: 0.01em;
+  }
+
+  :global(mark) {
+    background: rgba(0, 0, 0, 0.08);
+    color: inherit;
+    padding: 0 1px;
+    border-radius: 2px;
+  }
+
+  .search-empty {
+    list-style: none;
+    text-align: center;
+    padding: 48px 0;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--text-muted);
+  }
+</style>

@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-02",
+  "updated": "2026-09-07",
   "stats": {
-    "totalBooks": 212,
+    "totalBooks": 213,
     "finishedBooks": 29,
-    "highlights": 8107,
+    "highlights": 8110,
     "thoughts": 240,
-    "readMinutes": 29053,
-    "readDays": 932,
+    "readMinutes": 29523,
+    "readDays": 936,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,13 +16,47 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 901705
+      "1767196800": 929872
     },
     "dailyReadTimes": {
-      "1788192000": 230
+      "1788192000": 230,
+      "1788278400": 44,
+      "1788364800": 5194,
+      "1788451200": 1477,
+      "1788537600": 9489,
+      "1788624000": 11963
     }
   },
   "books": [
+    {
+      "bookId": "41516894",
+      "title": "短史记",
+      "author": "谌旭彬 杨津涛",
+      "cover": "https://wfqqreader-1252317822.image.myqcloud.com/cover/894/41516894/t6_41516894.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 3,
+      "thoughtCount": 0,
+      "lastReadAt": 1788516338,
+      "highlights": [
+        {
+          "chapter": "序言",
+          "text": "中文知识界流传着不少与史实存在颇多差距的“历史常识”。这些“伪常识”，或来自传播过程中的信息变异，或始于好事者的刻意编造，或基于对不可靠史料的轻信，或引自猎奇类作品，或缘于缺乏史料依据的“我愿意相信”",
+          "createTime": 1788514818
+        },
+        {
+          "chapter": "序言",
+          "text": "唯有去伪存真才能鉴往知来。",
+          "createTime": 1788514846
+        },
+        {
+          "chapter": "秦民很难靠军功改命",
+          "text": "屯长和百将不允许参与斩首（主要是防止他们利用权势侵吞首级，损害下属秦军战斗积极性）",
+          "createTime": 1788516338
+        }
+      ],
+      "thoughts": []
+    },
     {
       "bookId": "30394576",
       "title": "人人都该懂的认识论",
@@ -16305,7 +16339,7 @@
     {
       "bookId": "27328330",
       "title": "几何原本（果麦经典）",
-      "author": "欧几里得",
+      "author": "[古希腊]欧几里得",
       "cover": "https://cdn.weread.qq.com/weread/cover/72/YueWen_27328330/t6_YueWen_27328330.jpg",
       "finished": false,
       "progress": 0,

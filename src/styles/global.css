@@ -705,6 +705,9 @@ a.post-nav-item:hover .post-nav-label {
   align-items: center;
   gap: 12px;
   width: 100%;
+  /* 与下方「N 条评论」标题拉开距离：Trigger 是 .twikoo-wrap 里 #tcomment 之前
+     的独立元素，Twikoo 渲染出的 .tk-comments 对它没有任何上边距，不加会贴在一起。 */
+  margin-bottom: 26px;
   padding: 8px 14px;
   font-family: var(--font-sans);
   font-size: 14px;

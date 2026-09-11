@@ -687,6 +687,64 @@ a.post-nav-item:hover .post-nav-label {
   border-top: 1px solid var(--hairline);
 }
 
+/* —— 编辑器折叠：默认只留一条引导条，点击后才展开 ——
+   ⚠️ 必须用 `>` 限定为 .tk-comments 的直接子级。Twikoo 点「回复」用的是挂在
+   .tk-main 下的内联编辑器，若用 `.tk-submit` 通配会一并隐藏，点回复将毫无反应。
+   ⚠️ 展开时必须还原成 flex：Twikoo 自带 `.tk-submit { display: flex; flex-direction: column }`，
+   写成 block 会破坏编辑器内部布局。 */
+.twikoo-wrap .twikoo .tk-comments > .tk-submit {
+  display: none;
+}
+
+.twikoo-wrap.is-editing .twikoo .tk-comments > .tk-submit {
+  display: flex;
+}
+
+.twikoo-wrap .tk-trigger {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 14px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: text;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+/* 只在 Twikoo 就绪且未展开时露出引导条，避免脚本加载失败时出现一个点了没反应的占位块 */
+.twikoo-wrap.is-ready:not(.is-editing) .tk-trigger {
+  display: flex;
+}
+
+.twikoo-wrap .tk-trigger:hover {
+  border-color: var(--text);
+  color: var(--text-secondary);
+}
+
+.twikoo-wrap .tk-trigger-avatar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  color: var(--text-tertiary);
+}
+
+.twikoo-wrap .tk-trigger-avatar svg {
+  width: 18px;
+  height: 18px;
+}
+
 .twikoo,
 .twikoo * {
   font-family: var(--font-sans);
@@ -728,6 +786,17 @@ a.post-nav-item:hover .post-nav-label {
 .twikoo .tk-action-link:hover,
 .twikoo .tk-replies-count:hover {
   color: var(--text);
+}
+
+/* 操作按钮（点赞 / 反对 / 回复…）：Twikoo 默认给的是 Element 蓝 #409eff，
+   放在纯黑白体系里很跳，统一拉成纯黑。
+   ⚠️ `.tk-action-link` 与 `.tk-action-icon` 各自带 `color: #409eff`，
+   子元素有自己的声明，靠继承改不掉，必须逐层显式命中。 */
+.twikoo .tk-action-link,
+.twikoo .tk-action-count,
+.twikoo .tk-action-icon,
+.twikoo .tk-action-icon-solid {
+  color: var(--text) !important;
 }
 
 /* 正文 */
@@ -829,6 +898,35 @@ a.post-nav-item:hover .post-nav-label {
 
 .twikoo .tk-icon:hover {
   color: var(--text);
+}
+
+/* 评论区工具条：排序按钮（最新 / 最早 / 热门）与搜索·刷新·设置图标。
+   ⚠️ 这两组都带有 `.tk-sort-item.__active` / `.tk-icon.__comments` 这类复合选择器，
+   与上面的 `.twikoo .tk-icon` 同权重 (0,2,0)，而 Twikoo 的样式表是运行时后注入的，
+   会靠后胜出 —— 所以必须显式命中并加 !important，否则蓝色照旧。
+   ⚠️ 搜索图标的激活态是「蓝底白图标 + 蓝色光晕」，底色与 box-shadow 必须一起覆盖，
+   否则会变成灰图标压在蓝底上。 */
+.twikoo .tk-sort-item {
+  color: var(--text-muted) !important;
+}
+
+.twikoo .tk-sort-item:hover,
+.twikoo .tk-sort-item.__active {
+  color: var(--text) !important;
+}
+
+.twikoo .tk-icon.__comments {
+  color: var(--text-muted) !important;
+}
+
+.twikoo .tk-icon.__comments:hover {
+  color: var(--text) !important;
+}
+
+.twikoo .tk-icon.__comments.__active {
+  color: #fff !important;
+  background: var(--text) !important;
+  box-shadow: 0 0 0 0.2rem var(--text) !important;
 }
 
 /* ============================================================

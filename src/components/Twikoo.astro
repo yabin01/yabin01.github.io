@@ -8,6 +8,9 @@
 //    会让 `window.twikoo` 变成那个 DOM 元素本身。此时「是否已加载」的真值判断会误判，
 //    导致脚本永远不加载，直接报 `window.twikoo.init is not a function`。
 //    官方文档用的 id 是 `tcomment`，这里保持一致。
+//
+// 编辑器默认折叠：只显示一条「写下你的评论…」引导条，点击后才展开真正的表单，
+// 评论发送成功后自动收起。折叠逻辑见文件末尾的内联脚本。
 import { COMMENTS } from '../consts';
 
 const { envId, lang, script } = COMMENTS.twikoo;
@@ -16,14 +19,101 @@ const { envId, lang, script } = COMMENTS.twikoo;
 {
   envId && (
     <section class="twikoo-wrap" aria-label="评论">
+      {/* 折叠态引导条：外观对齐 Twikoo 编辑器自身（左侧圆形头像 + 输入提示） */}
+      <button type="button" class="tk-trigger">
+        <span class="tk-trigger-avatar" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              fill="currentColor"
+              d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2 35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"
+            />
+          </svg>
+        </span>
+        <span class="tk-trigger-text">写下你的评论…</span>
+      </button>
+
       <div id="tcomment" />
+
       <script define:vars={{ envId, lang, script }}>
         (function () {
-          // 判断必须是「init 是函数」，不能用真值判断。
-          // 带 id 的元素会被挂到 window 上，真值判断会在脚本加载前就误判为已就绪。
+          var wrap = document.querySelector('.twikoo-wrap');
+          var trigger = wrap ? wrap.querySelector('.tk-trigger') : null;
+          var timer = null;
+
           function isReady() {
             return !!window.twikoo && typeof window.twikoo.init === 'function';
           }
+
+          // ⚠️ 只取「主编辑器」——它是 .tk-comments 的直接子级。
+          //    Twikoo 点「回复」时用的是挂在 .tk-main 下的内联编辑器，
+          //    若用 `.tk-submit` 通配，两者会一起被折叠，点回复将毫无反应。
+          function mainEditor() {
+            return wrap ? wrap.querySelector('.twikoo .tk-comments > .tk-submit') : null;
+          }
+
+          function mainTextarea() {
+            var box = mainEditor();
+            return box ? box.querySelector('textarea') : null;
+          }
+
+          function expand() {
+            if (!wrap) return;
+            wrap.classList.add('is-editing');
+            // 隐藏元素无法获得焦点，等样式生效（下一帧）再聚焦
+            requestAnimationFrame(function () {
+              window.setTimeout(function () {
+                var ta = mainTextarea();
+                if (ta) ta.focus();
+              }, 30);
+            });
+          }
+
+          function collapse() {
+            if (wrap) wrap.classList.remove('is-editing');
+            if (timer) {
+              window.clearInterval(timer);
+              timer = null;
+            }
+          }
+
+          // 提交成功与否，最可靠的信号是「编辑器被清空」——
+          // Twikoo 提交成功后会 this.comment = ""，失败则原文保留。
+          // 用轮询而不是依赖内部渲染时序，失败时不会误收起。
+          function watchSubmit() {
+            if (timer) window.clearInterval(timer);
+            var deadline = Date.now() + 20000;
+            timer = window.setInterval(function () {
+              if (!mainTextarea() || !mainTextarea().value.trim()) {
+                collapse();
+              } else if (Date.now() > deadline) {
+                window.clearInterval(timer);
+                timer = null;
+              }
+            }, 300);
+          }
+
+          if (wrap) {
+            wrap.addEventListener(
+              'click',
+              function (e) {
+                var el = e.target;
+                if (!el || !el.closest) return;
+                var box = el.closest('.tk-submit');
+                // 只在主编辑器里判定发送键；内联回复编辑器的发送不影响折叠态
+                if (
+                  box &&
+                  box.parentElement &&
+                  box.parentElement.classList.contains('tk-comments') &&
+                  el.closest('.el-button--primary')
+                ) {
+                  watchSubmit();
+                }
+              },
+              true
+            );
+          }
+
+          if (trigger) trigger.addEventListener('click', expand);
 
           function init() {
             if (!isReady()) return;
@@ -33,6 +123,7 @@ const { envId, lang, script } = COMMENTS.twikoo;
               lang: lang,
               path: location.pathname,
             });
+            if (wrap) wrap.classList.add('is-ready');
           }
 
           function boot() {
@@ -47,6 +138,8 @@ const { envId, lang, script } = COMMENTS.twikoo;
             document.head.appendChild(s);
           }
 
+          // 判断必须是「init 是函数」，不能用真值判断。
+          // 带 id 的元素会被挂到 window 上，真值判断会在脚本加载前就误判为已就绪。
           if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', boot);
           } else {

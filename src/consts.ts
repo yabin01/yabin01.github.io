@@ -46,10 +46,27 @@ export const CATEGORY_META: Record<
 
 // Giscus 评论（基于 GitHub Discussions，免后端）。
 // 已启用：repoId / categoryId 已填好（2026-08-19）。
+// 注意：仅当 COMMENTS.provider 为 'giscus' 时生效，作为 Twikoo 未就绪前的兜底。
 export const GISCUS = {
   repo: 'yabin01/yabin01.github.io',
   repoId: 'R_kgDOTmFjkw',
   category: 'Announcements',
   categoryId: 'DIC_kwDOTmFjk84DDsRG',
   enabled: true,
+};
+
+// 评论系统总开关。
+// provider: 'twikoo' 用 Twikoo（支持匿名，无需登录）；'giscus' 走 GitHub Discussions；'none' 关闭。
+// 只要 twikoo.envId 为空，会自动回退到 Giscus，站点不会出现坏掉的评论区。
+export const COMMENTS = {
+  provider: 'twikoo' as 'twikoo' | 'giscus' | 'none',
+  twikoo: {
+    // Twikoo 后端：Netlify 云函数 + MongoDB Atlas（2026-09-11 部署完成）
+    // ⚠️ 必须是完整的函数地址。Twikoo 前端对 http(s):// 开头的 envId 会直接 POST，
+    //    不会自动补路径（已在 twikoo.min.js 中确认，"netlify" 字样出现 0 次）。
+    envId: 'https://chingyuan-comments.netlify.app/.netlify/functions/twikoo',
+    lang: 'zh-CN',
+    // 前端脚本已自托管到 /vendor/twikoo.min.js，避免 jsDelivr 在国内被墙
+    script: '/vendor/twikoo.min.js',
+  },
 };

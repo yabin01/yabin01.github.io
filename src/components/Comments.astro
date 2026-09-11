@@ -1,0 +1,18 @@
+---
+// 评论区分发组件。
+// provider = twikoo 且 envId 已填 → Twikoo（匿名评论）
+// provider = twikoo 但 envId 为空 → 自动回退 Giscus，避免线上出现「坏掉的评论区」
+// provider = giscus → Giscus（需 GitHub 账号）
+// provider = none   → 不渲染评论区
+import Giscus from './Giscus.astro';
+import Twikoo from './Twikoo.astro';
+import { COMMENTS } from '../consts';
+
+const { provider, twikoo } = COMMENTS;
+
+const active: 'twikoo' | 'giscus' | 'none' =
+  provider === 'none' ? 'none' : provider === 'twikoo' && twikoo.envId ? 'twikoo' : 'giscus';
+---
+
+{active === 'twikoo' && <Twikoo />}
+{active === 'giscus' && <Giscus />}

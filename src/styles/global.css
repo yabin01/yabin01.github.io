@@ -437,6 +437,75 @@ img {
   border-color: var(--text);
 }
 
+/* —— 文章底部上一篇 / 下一篇导航（Sinya Lee 式双栏） —— */
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 40px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.post-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.post-nav-next {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.post-nav-label {
+  font-family: var(--font-nav);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.post-nav-title {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+a.post-nav-item:hover .post-nav-title {
+  color: var(--link);
+}
+
+a.post-nav-item:hover .post-nav-label {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .post-nav {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .post-nav-next {
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  /* 窄屏时让「下一篇」排在「上一篇」下方更符合阅读顺序 */
+  .post-nav .post-nav-next {
+    order: 2;
+  }
+
+  .post-nav .post-nav-prev {
+    order: 1;
+  }
+}
+
 .post-lead {
   font-family: var(--font-sans);
   font-size: 17px;
@@ -609,6 +678,141 @@ img {
   margin-top: 56px;
   padding-top: 32px;
   border-top: 1px solid var(--hairline);
+}
+
+/* —— Twikoo：把默认外观拉回「纯白 + 发丝线 + 无衬线」体系 —— */
+.twikoo-wrap {
+  margin-top: 56px;
+  padding-top: 32px;
+  border-top: 1px solid var(--hairline);
+}
+
+.twikoo,
+.twikoo * {
+  font-family: var(--font-sans);
+}
+
+/* 标题与计数 */
+.twikoo .tk-comments-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.twikoo .tk-comments-count {
+  color: var(--text-secondary);
+}
+
+/* 昵称 / 时间 / 操作 */
+.twikoo .tk-nick,
+.twikoo .tk-nick-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.twikoo .tk-nick-link:hover {
+  color: var(--link);
+}
+
+.twikoo .tk-time,
+.twikoo .tk-tag,
+.twikoo .tk-replies-count,
+.twikoo .tk-footer,
+.twikoo .tk-action-link {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.twikoo .tk-action-link:hover,
+.twikoo .tk-replies-count:hover {
+  color: var(--text);
+}
+
+/* 正文 */
+.twikoo .tk-content {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.twikoo .tk-content p {
+  margin: 6px 0;
+}
+
+/* 头像 */
+.twikoo .tk-avatar,
+.twikoo .tk-avatar-img {
+  border-radius: 999px;
+  border-color: var(--border-subtle);
+}
+
+/* 表单控件 */
+.twikoo .el-textarea__inner,
+.twikoo .el-input__inner {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  border-radius: 8px;
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.twikoo .el-textarea__inner:focus,
+.twikoo .el-input__inner:focus {
+  border-color: var(--text);
+}
+
+.twikoo .el-button {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: 999px;
+}
+
+.twikoo .el-button--primary {
+  background-color: var(--text);
+  border-color: var(--text);
+  color: #fff;
+}
+
+.twikoo .el-button--primary:hover,
+.twikoo .el-button--primary:focus {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+.twikoo .el-button:not(.el-button--primary) {
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.twikoo .el-button:not(.el-button--primary):hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* 分页 / 展开 */
+.twikoo .tk-pagination .el-pager li.is-active,
+.twikoo .tk-pagination .el-pager li:hover {
+  color: var(--text);
+}
+
+.twikoo .tk-expand,
+.twikoo .tk-fold {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* 表情 / 图片按钮 */
+.twikoo .tk-icon,
+.twikoo .tk-owo-emotion {
+  color: var(--text-muted);
+}
+
+.twikoo .tk-icon:hover {
+  color: var(--text);
 }
 
 /* ============================================================

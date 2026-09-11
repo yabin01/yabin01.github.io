@@ -1,0 +1,47 @@
+---
+// Twikoo 评论组件 —— 支持匿名评论，访客无需注册任何账号。
+// · 后端部署在 Netlify（国内比 vercel.app 稳），数据存 MongoDB Atlas 免费版
+// · 前端脚本自托管在 /vendor/twikoo.min.js，规避 jsDelivr 在国内被墙导致评论区加载不出来
+import { COMMENTS } from '../consts';
+
+const { envId, lang, script } = COMMENTS.twikoo;
+---
+
+{
+  envId && (
+    <section class="twikoo-wrap" aria-label="评论">
+      <div id="twikoo" />
+      <script define:vars={{ envId, lang, script }}>
+        (function () {
+          function init() {
+            if (!window.twikoo) return;
+            window.twikoo.init({
+              envId: envId,
+              el: '#twikoo',
+              lang: lang,
+              path: location.pathname,
+            });
+          }
+
+          function boot() {
+            if (window.twikoo) {
+              init();
+              return;
+            }
+            var s = document.createElement('script');
+            s.src = script;
+            s.async = true;
+            s.onload = init;
+            document.head.appendChild(s);
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', boot);
+          } else {
+            boot();
+          }
+        })();
+      </script>
+    </section>
+  )
+}

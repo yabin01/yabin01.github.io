@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import Giscus from '../../components/Giscus.astro';
+import Comments from '../../components/Comments.astro';
 import { getCollection, render } from 'astro:content';
 import { CATEGORY_META } from '../../consts';
 
@@ -16,6 +16,14 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const meta = CATEGORY_META[post.data.category];
+
+// 按发布时间倒序找到当前文章，得出相邻的新/旧文章
+const allPosts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const idx = allPosts.findIndex((p) => p.id === post.id);
+const newerPost = idx > 0 ? allPosts[idx - 1] : null;
+const olderPost = idx >= 0 && idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description} noAside>
@@ -57,6 +65,29 @@ const meta = CATEGORY_META[post.data.category];
       )
     }
 
-    <Giscus />
+    <nav class="post-nav" aria-label="相邻文章">
+      {
+        olderPost ? (
+          <a class="post-nav-item post-nav-prev" href={`/posts/${olderPost.id}/`}>
+            <span class="post-nav-label">← 上一篇文章</span>
+            <span class="post-nav-title">{olderPost.data.title}</span>
+          </a>
+        ) : (
+          <span class="post-nav-item is-empty" aria-hidden="true" />
+        )
+      }
+      {
+        newerPost ? (
+          <a class="post-nav-item post-nav-next" href={`/posts/${newerPost.id}/`}>
+            <span class="post-nav-label">下一篇文章 →</span>
+            <span class="post-nav-title">{newerPost.data.title}</span>
+          </a>
+        ) : (
+          <span class="post-nav-item is-empty" aria-hidden="true" />
+        )
+      }
+    </nav>
+
+    <Comments />
   </article>
 </BaseLayout>

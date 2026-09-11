@@ -2,6 +2,12 @@
 // Twikoo 评论组件 —— 支持匿名评论，访客无需注册任何账号。
 // · 后端部署在 Netlify（国内比 vercel.app 稳），数据存 MongoDB Atlas 免费版
 // · 前端脚本自托管在 /vendor/twikoo.min.js，规避 jsDelivr 在国内被墙导致评论区加载不出来
+//
+// ⚠️ 容器 id 必须避开 `twikoo`：
+//    浏览器会把带 id 的元素挂到 window 上（named property），所以 <div id="twikoo">
+//    会让 `window.twikoo` 变成那个 DOM 元素本身。此时「是否已加载」的真值判断会误判，
+//    导致脚本永远不加载，直接报 `window.twikoo.init is not a function`。
+//    官方文档用的 id 是 `tcomment`，这里保持一致。
 import { COMMENTS } from '../consts';
 
 const { envId, lang, script } = COMMENTS.twikoo;
@@ -10,21 +16,27 @@ const { envId, lang, script } = COMMENTS.twikoo;
 {
   envId && (
     <section class="twikoo-wrap" aria-label="评论">
-      <div id="twikoo" />
+      <div id="tcomment" />
       <script define:vars={{ envId, lang, script }}>
         (function () {
+          // 判断必须是「init 是函数」，不能用真值判断。
+          // 带 id 的元素会被挂到 window 上，真值判断会在脚本加载前就误判为已就绪。
+          function isReady() {
+            return !!window.twikoo && typeof window.twikoo.init === 'function';
+          }
+
           function init() {
-            if (!window.twikoo) return;
+            if (!isReady()) return;
             window.twikoo.init({
               envId: envId,
-              el: '#twikoo',
+              el: '#tcomment',
               lang: lang,
               path: location.pathname,
             });
           }
 
           function boot() {
-            if (window.twikoo) {
+            if (isReady()) {
               init();
               return;
             }

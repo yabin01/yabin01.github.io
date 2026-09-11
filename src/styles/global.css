@@ -748,20 +748,25 @@ a.post-nav-item:hover .post-nav-label {
   border-color: var(--border-subtle);
 }
 
-/* 表单控件 */
+/* 表单控件
+   ⚠️ 这里必须带 !important：Twikoo 运行时注入的 Element UI 样式表排在我们的
+   样式表之后，像 `.el-button--primary.is-disabled` 与我们 `.twikoo .el-button--primary`
+   同权重 (0,2,0)，靠后者胜出，会把黑色主按钮变回 Element 蓝。 */
 .twikoo .el-textarea__inner,
 .twikoo .el-input__inner {
   font-family: var(--font-sans);
   font-size: 14px;
   border-radius: 8px;
-  border-color: var(--border);
+  border-color: var(--border) !important;
   background: var(--surface);
   color: var(--text);
+  box-shadow: none !important;
 }
 
 .twikoo .el-textarea__inner:focus,
 .twikoo .el-input__inner:focus {
-  border-color: var(--text);
+  border-color: var(--text) !important;
+  box-shadow: none !important;
 }
 
 .twikoo .el-button {
@@ -770,27 +775,38 @@ a.post-nav-item:hover .post-nav-label {
   border-radius: 999px;
 }
 
+/* 主按钮：启用 = 纯黑，悬停 = 纯黑加亮 */
 .twikoo .el-button--primary {
-  background-color: var(--text);
-  border-color: var(--text);
-  color: #fff;
+  background-color: var(--text) !important;
+  border-color: var(--text) !important;
+  color: #fff !important;
 }
 
 .twikoo .el-button--primary:hover,
 .twikoo .el-button--primary:focus {
-  background-color: var(--accent-hover);
-  border-color: var(--accent-hover);
-  color: #fff;
+  background-color: var(--accent-hover) !important;
+  border-color: var(--accent-hover) !important;
+  color: #fff !important;
+}
+
+/* 禁用态必须是浅灰，否则「不能点」的按钮会显示成可点的纯黑。
+   放在启用态规则之后，同权重下靠后生效。 */
+.twikoo .el-button--primary.is-disabled,
+.twikoo .el-button--primary.is-disabled:hover,
+.twikoo .el-button--primary.is-disabled:focus {
+  background-color: var(--border) !important;
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
 }
 
 .twikoo .el-button:not(.el-button--primary) {
-  border-color: var(--border);
-  color: var(--text-secondary);
+  border-color: var(--border) !important;
+  color: var(--text-secondary) !important;
 }
 
 .twikoo .el-button:not(.el-button--primary):hover {
-  border-color: var(--text);
-  color: var(--text);
+  border-color: var(--text) !important;
+  color: var(--text) !important;
 }
 
 /* 分页 / 展开 */

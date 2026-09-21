@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-12",
+  "updated": "2026-09-21",
   "stats": {
-    "totalBooks": 213,
+    "totalBooks": 214,
     "finishedBooks": 29,
-    "highlights": 8144,
+    "highlights": 8145,
     "thoughts": 243,
-    "readMinutes": 29642,
-    "readDays": 942,
+    "readMinutes": 29692,
+    "readDays": 944,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,7 +16,7 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 937044
+      "1767196800": 940046
     },
     "dailyReadTimes": {
       "1788192000": 230,
@@ -30,10 +30,34 @@
       "1788883200": 3609,
       "1788969600": 85,
       "1789056000": 275,
-      "1789142400": 2879
+      "1789142400": 3018,
+      "1789315200": 0,
+      "1789401600": 402,
+      "1789488000": 0,
+      "1789574400": 0,
+      "1789660800": 2461
     }
   },
   "books": [
+    {
+      "bookId": "3300035758",
+      "title": "21世纪货币政策",
+      "author": "本·伯南克",
+      "cover": "https://cdn.weread.qq.com/weread/cover/50/cpPlatform_e1X7NMQapS7gjSsFxCNMEU/t6_cpPlatform_e1X7NMQapS7gjSsFxCNMEU.jpg",
+      "finished": false,
+      "progress": 300,
+      "highlightCount": 1,
+      "thoughtCount": 0,
+      "lastReadAt": 1789427972,
+      "highlights": [
+        {
+          "chapter": "导读 一本了解美联储货币政策决策历史演进的好书",
+          "text": "提出了金本位下货币紧缩导致了大萧条的观点",
+          "createTime": 1789427972
+        }
+      ],
+      "thoughts": []
+    },
     {
       "bookId": "30472761",
       "title": "通鉴纪事本末（注译本·全42卷）（全本全注全译）",

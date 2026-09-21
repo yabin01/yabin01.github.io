@@ -106,6 +106,21 @@ import '../styles/global.css';
               正文 (Markdown)
               <textarea id="body" rows="18" placeholder="在这里写正文…"></textarea>
             </label>
+
+            <div class="uploader" id="dropZone">
+              <div class="uploader-head">
+                <span class="uploader-title">图片</span>
+                <input id="imgDir" type="text" placeholder="子目录，留空则跟随文件标识" />
+                <button id="pickImages" class="btn ghost" type="button">＋ 上传图片</button>
+                <input id="fileInput" type="file" accept="image/*" multiple hidden />
+              </div>
+              <p class="hint">
+                图片直接提交到仓库 <code>public/images/&lt;子目录&gt;/</code>，并在正文光标处自动插入引用。
+                也可以拖拽到正文框，或截图后直接 <kbd>Ctrl</kbd>+<kbd>V</kbd> 粘贴。
+              </p>
+              <div id="uploadList" class="upload-list"></div>
+            </div>
+
             <div class="actions">
               <button id="save" class="btn primary">保存并推送</button>
               <button id="delete" class="btn danger">删除此文</button>
@@ -209,6 +224,11 @@ import '../styles/global.css';
         gap: 0.5rem;
         color: var(--text);
       }
+      /* 全局 input 是 width:100%，复选框要还原成自身宽度，否则把文字推到一边 */
+      label.check input[type='checkbox'] {
+        width: auto;
+        margin: 0;
+      }
       input,
       select,
       textarea {
@@ -303,6 +323,85 @@ import '../styles/global.css';
         display: flex;
         gap: 0.7rem;
         margin-top: 0.4rem;
+      }
+      /* —— 图片上传区 —— */
+      .uploader {
+        border: 1px dashed var(--border);
+        border-radius: 10px;
+        padding: 0.8rem 0.9rem;
+        background: var(--bg-subtle);
+        margin-bottom: 0.9rem;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .uploader.dragover {
+        border-color: var(--text);
+        background: var(--surface);
+      }
+      .uploader-head {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .uploader-title {
+        font-size: 0.9rem;
+        color: var(--text);
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+      .uploader-head input[type='text'] {
+        flex: 1;
+        min-width: 10rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+      }
+      .uploader .hint {
+        margin: 0.6rem 0 0;
+        line-height: 1.6;
+      }
+      .uploader .hint code,
+      .uploader .hint kbd {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.05rem 0.3rem;
+      }
+      .upload-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        margin-top: 0.6rem;
+      }
+      .upload-list:empty {
+        margin-top: 0;
+      }
+      .upload-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      .upload-item .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+      .upload-item.doing .dot {
+        background: #c9a227;
+      }
+      .upload-item.done .dot {
+        background: #2f6b43;
+      }
+      .upload-item.fail .dot {
+        background: #b4453a;
+      }
+      .upload-item.fail {
+        color: #b4453a;
       }
       .preview-card {
         position: sticky;
@@ -538,8 +637,178 @@ import '../styles/global.css';
         }
       }
 
+      // —— 图片上传 ——
+      const imgDirEl = $('imgDir');
+      const fileInput = $('fileInput');
+      const dropZone = $('dropZone');
+      const uploadList = $('uploadList');
+
+      // 规范文件名：空格转连字符，去掉 URL/Markdown 里的危险字符，保留扩展名
+      function sanitizeName(name) {
+        const raw = String(name || '').trim();
+        const m = raw.match(/^(.*?)(\.[A-Za-z0-9]{1,8})$/);
+        const base = m ? m[1] : raw;
+        const ext = m ? m[2].toLowerCase() : '.png';
+        const safe = base
+          .replace(/\s+/g, '-')
+          .replace(/[^\w\u4e00-\u9fa5-]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '');
+        return (safe || 'image') + ext;
+      }
+
+      const encodePath = (p) => p.split('/').map(encodeURIComponent).join('/');
+
+      function readAsBase64(file) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(String(r.result).split(',')[1] || '');
+          r.onerror = () => reject(new Error('读取文件失败'));
+          r.readAsDataURL(file);
+        });
+      }
+
+      function addUploadRow(name, tip) {
+        const row = document.createElement('div');
+        row.className = 'upload-item doing';
+        const dot = document.createElement('span');
+        dot.className = 'dot';
+        const txt = document.createElement('span');
+        txt.className = 'txt';
+        txt.textContent = `${name} · ${tip}`;
+        row.append(dot, txt);
+        uploadList.appendChild(row);
+        const set = (cls, msg) => {
+          row.className = 'upload-item ' + cls;
+          txt.textContent = msg;
+        };
+        return {
+          done: (msg) => set('done', msg),
+          fail: (msg) => set('fail', msg),
+        };
+      }
+
+      // 插到正文光标处；批量时全部拼在一起插一次
+      function insertAtCursor(text) {
+        const v = bodyEl.value;
+        const s = typeof bodyEl.selectionStart === 'number' ? bodyEl.selectionStart : v.length;
+        const e = typeof bodyEl.selectionEnd === 'number' ? bodyEl.selectionEnd : v.length;
+        const before = v.slice(0, s);
+        const after = v.slice(e);
+        const lead = before && !before.endsWith('\n') ? '\n\n' : '';
+        const chunk = lead + text + '\n';
+        bodyEl.value = before + chunk + after;
+        const pos = (before + chunk).length;
+        bodyEl.setSelectionRange(pos, pos);
+        bodyEl.focus();
+        renderPreview();
+      }
+
+      async function uploadImages(fileList) {
+        const files = [...(fileList || [])].filter((f) => f && /^image\//i.test(f.type || ''));
+        if (!files.length) return;
+        if (!tokenEl.value.trim()) return status('请先填写并保存 GitHub Token，再上传图片', 'err');
+        const repo = repoEl.value.trim();
+        const branch = branchEl.value.trim() || 'main';
+        const dir = (imgDirEl.value.trim() || slugEl.value.trim() || 'misc').replace(/^\/+|\/+$/g, '');
+        const used = new Set();
+        const marks = [];
+        let okCount = 0;
+
+        for (const file of files) {
+          let fname = sanitizeName(file.name);
+          // 同一批里重名的自动加序号，避免后一张把前一张覆盖掉
+          if (used.has(fname)) {
+            const m = fname.match(/^(.*?)(\.[A-Za-z0-9]{1,8})$/);
+            let i = 2;
+            let cand = fname;
+            do {
+              cand = m ? `${m[1]}-${i}${m[2]}` : `${fname}-${i}`;
+              i++;
+            } while (used.has(cand));
+            fname = cand;
+          }
+          used.add(fname);
+
+          const path = `public/images/${dir}/${fname}`;
+          const row = addUploadRow(fname, '上传中…');
+          try {
+            const b64 = await readAsBase64(file);
+            // 远端已存在同名文件时要带上 sha 才能更新
+            let sha = null;
+            const head = await api(`/repos/${repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(branch)}`);
+            if (head.ok) {
+              const j = await head.json();
+              sha = j.sha;
+            }
+            const putBody = {
+              message: `blog: 上传图片 ${dir}/${fname}`,
+              content: b64,
+              branch,
+              ...(sha ? { sha } : {}),
+            };
+            const res = await api(`/repos/${repo}/contents/${encodePath(path)}`, {
+              method: 'PUT',
+              body: JSON.stringify(putBody),
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.message || `HTTP ${res.status}`);
+            }
+            marks.push(`![${fname}](/images/${dir}/${fname})`);
+            okCount++;
+            row.done(`${fname} · 已上传${sha ? '（覆盖同名）' : ''}`);
+          } catch (err) {
+            row.fail(`${fname} · 失败：${err.message}`);
+          }
+        }
+
+        if (marks.length) {
+          insertAtCursor(marks.join('\n\n'));
+          status(`已上传 ${okCount}/${files.length} 张图片，引用已插入正文光标处 ✓ 记得点「保存并推送」`, 'ok');
+        } else {
+          status('图片上传失败，请检查令牌是否有该仓库的 contents 写权限', 'err');
+        }
+      }
+
       // 事件
       bodyEl.addEventListener('input', renderPreview);
+      $('pickImages').addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', () => {
+        uploadImages(fileInput.files);
+        fileInput.value = '';
+      });
+      // 截图后直接 Ctrl+V 粘贴到正文框
+      bodyEl.addEventListener('paste', (ev) => {
+        const fs = ev.clipboardData && ev.clipboardData.files;
+        if (fs && fs.length) {
+          ev.preventDefault();
+          uploadImages(fs);
+        }
+      });
+      // 拖拽到上传区或正文框
+      ['dragenter', 'dragover'].forEach((t) =>
+        dropZone.addEventListener(t, (ev) => {
+          ev.preventDefault();
+          dropZone.classList.add('dragover');
+        })
+      );
+      ['dragleave', 'drop'].forEach((t) =>
+        dropZone.addEventListener(t, (ev) => {
+          ev.preventDefault();
+          dropZone.classList.remove('dragover');
+        })
+      );
+      dropZone.addEventListener('drop', (ev) => {
+        if (ev.dataTransfer && ev.dataTransfer.files.length) uploadImages(ev.dataTransfer.files);
+      });
+      bodyEl.addEventListener('dragover', (ev) => ev.preventDefault());
+      bodyEl.addEventListener('drop', (ev) => {
+        if (ev.dataTransfer && ev.dataTransfer.files.length) {
+          ev.preventDefault();
+          uploadImages(ev.dataTransfer.files);
+        }
+      });
       $('saveSettings').addEventListener('click', () => {
         localStorage.setItem('gh_token', tokenEl.value.trim());
         localStorage.setItem('gh_repo', repoEl.value.trim());

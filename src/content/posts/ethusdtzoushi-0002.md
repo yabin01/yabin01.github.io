@@ -1,7 +1,7 @@
 ---
 title: 2026年9月20日行情分析
 description: 本报告按周期从大到小进行分析，给出各周期方向判断。分析方法：同级别分解。
-pubDate: 2026-09-21
+pubDate: 2026-09-20
 category: 交易
 tags: []
 draft: false
@@ -43,4 +43,5 @@ draft: false
 ---
 
 2026/09/20-20：00 By Liu CHongYuan
+
 

@@ -1,0 +1,86 @@
+---
+// 缠论原文单课页。复用文章页的全局样式（post-article / prose / post-nav），
+// 但上下篇按「课次」而非时间排序。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Comments from '../../components/Comments.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('chanlun', ({ data }) => !data.draft);
+  return lessons.map((lesson) => ({
+    params: { num: String(lesson.data.lesson) },
+    props: { lesson },
+  }));
+}
+
+const { lesson } = Astro.props;
+const { Content } = await render(lesson);
+
+const all = (await getCollection('chanlun', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.lesson - b.data.lesson
+);
+const idx = all.findIndex((l) => l.data.lesson === lesson.data.lesson);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
+
+const subOf = (t: string) => t.replace(/^教你炒股票\s*\d+\s*[：:]\s*/, '');
+const sub = subOf(lesson.data.title);
+---
+
+<BaseLayout title={lesson.data.title} description={lesson.data.description}>
+  <article class="post-article">
+    <header class="post-header">
+      <div class="post-meta">
+        <a class="post-cat" href="/chanlun">缠论原文</a>
+        <span>第 {lesson.data.lesson} 课</span>
+        <FormattedDate date={lesson.data.pubDate} />
+      </div>
+      <h1 class="post-h1">{sub}</h1>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <nav class="post-nav" aria-label="相邻课程">
+      {
+        prev ? (
+          <a class="post-nav-item post-nav-prev" href={`/chanlun/${prev.data.lesson}/`}>
+            <span class="post-nav-label">← 第 {prev.data.lesson} 课</span>
+            <span class="post-nav-title">{subOf(prev.data.title)}</span>
+          </a>
+        ) : (
+          <span class="post-nav-item is-empty" aria-hidden="true" />
+        )
+      }
+      {
+        next ? (
+          <a class="post-nav-item post-nav-next" href={`/chanlun/${next.data.lesson}/`}>
+            <span class="post-nav-label">第 {next.data.lesson} 课 →</span>
+            <span class="post-nav-title">{subOf(next.data.title)}</span>
+          </a>
+        ) : (
+          <span class="post-nav-item is-empty" aria-hidden="true" />
+        )
+      }
+    </nav>
+
+    <p class="cl-back"><a href="/chanlun">← 返回缠论原文目录</a></p>
+
+    <Comments />
+  </article>
+</BaseLayout>
+
+<style>
+  .cl-back {
+    margin: 1.4rem 0 0;
+    font-size: 0.88rem;
+  }
+  .cl-back a {
+    color: var(--text-muted);
+  }
+  .cl-back a:hover {
+    color: var(--text);
+  }
+</style>

@@ -1,0 +1,155 @@
+---
+// 缠论原文目录页：按上/中/下册分组列出所有课次。
+// 数据来自独立的 chanlun 集合，与 posts 互不干扰。
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { getCollection } from 'astro:content';
+
+const lessons = (await getCollection('chanlun', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.lesson - b.data.lesson
+);
+
+const subOf = (title: string) => title.replace(/^教你炒股票\s*\d+\s*[：:]\s*/, '');
+
+const VOLUMES = ['上册', '中册', '下册'];
+const groups = VOLUMES.map((name) => ({
+  name,
+  items: lessons.filter((l) => l.data.volume === name),
+})).filter((g) => g.items.length > 0);
+
+const first = lessons[0]?.data.lesson ?? 1;
+const last = lessons[lessons.length - 1]?.data.lesson ?? 0;
+---
+
+<BaseLayout
+  title="缠论原文"
+  description="缠中说禅《教你炒股票》108 课原文，按课次排列。"
+>
+  <header class="cl-header">
+    <h1>缠论原文</h1>
+    <p class="cl-desc">
+      缠中说禅《教你炒股票》108 课原文，按课次顺序排列。
+    </p>
+    <p class="cl-count">已收录 {lessons.length} 课（第 {first}–{last} 课）</p>
+  </header>
+
+  {
+    groups.map((g) => (
+      <section class="cl-group">
+        <h2 class="cl-group-title">
+          {g.name}
+          <span class="cl-group-count">{g.items.length}</span>
+        </h2>
+        <ol class="cl-list">
+          {g.items.map((l) => (
+            <li>
+              <a class="cl-item" href={`/chanlun/${l.data.lesson}/`}>
+                <span class="cl-num">{String(l.data.lesson).padStart(3, '0')}</span>
+                <span class="cl-title">{subOf(l.data.title)}</span>
+                <span class="cl-date">
+                  <FormattedDate date={l.data.pubDate} />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+
+  {
+    groups.length === 0 && (
+      <p style="color:var(--text-muted)">还没有收录课程。</p>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .cl-header {
+    padding: 2rem 0 1.4rem;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 2rem;
+  }
+  .cl-header h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+  }
+  .cl-desc {
+    color: var(--text-muted);
+    margin: 0 0 0.4rem;
+    font-size: 0.95rem;
+  }
+  .cl-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+  .cl-group {
+    margin-bottom: 2.6rem;
+  }
+  .cl-group-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--text-muted);
+    margin: 0 0 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .cl-group-count {
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--hairline);
+  }
+  .cl-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .cl-list li {
+    margin: 0;
+  }
+  .cl-item {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr auto;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 0.85rem 0.4rem;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    color: var(--text);
+    transition: background 0.15s ease, padding-left 0.15s ease;
+  }
+  .cl-item:hover {
+    background: var(--bg-subtle);
+    padding-left: 0.8rem;
+  }
+  .cl-num {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .cl-title {
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+  .cl-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 640px) {
+    .cl-item {
+      grid-template-columns: 2.6rem 1fr;
+      row-gap: 0.25rem;
+    }
+    .cl-date {
+      grid-column: 2;
+    }
+  }
+</style>

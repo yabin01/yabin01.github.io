@@ -14,6 +14,7 @@ export const SITE = {
 // 顶部导航。href 使用站点内路径。
 export const NAV: { label: string; href: string }[] = [
   { label: '首页', href: '/' },
+  { label: '缠论原文', href: '/chanlun' },
   { label: '交易', href: '/category/trading' },
   { label: '读书', href: '/category/reading' },
   { label: '随笔', href: '/category/essays' },

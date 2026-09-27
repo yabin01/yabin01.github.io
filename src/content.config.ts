@@ -16,4 +16,19 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+// 缠论原文：从《教你炒股票108课》按课拆出的原文，独立于个人文章流。
+// 故意不塞进 posts —— 108 篇是文献库性质，混进去会把首页/归档/RSS 全刷成课程。
+const chanlun = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/chanlun' }),
+  schema: z.object({
+    title: z.string(),
+    lesson: z.number(),
+    volume: z.string().default('上册'),
+    pubDate: z.coerce.date(),
+    description: z.string().default(''),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { posts, chanlun };

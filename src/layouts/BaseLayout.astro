@@ -23,6 +23,12 @@ const footerNav = [
   { label: '关于', href: '/about' },
   { label: '写作台', href: '/write' },
 ];
+
+// 独立项目（同域下的另一个站点，新标签打开）
+const footerProjects = [
+  { label: 'TradeMind', href: 'https://yabin01.github.io/TradeMind/', note: 'AI 交易日志与分析' },
+  { label: '缠论知识库', href: 'https://yabin01.github.io/chan-wiki/', note: '缠论资料整理' },
+];
 ---
 
 <!doctype html>
@@ -57,6 +63,18 @@ const footerNav = [
           {footerNav.map((item) => <a href={item.href}>{item.label}</a>)}
         </nav>
         <span class="copy">© {new Date().getFullYear()} {SITE.author}</span>
+        <div class="site-footer-projects">
+          <span class="projects-label">项目</span>
+          {
+            footerProjects.map((p) => (
+              <a href={p.href} class="project-link" target="_blank" rel="noopener noreferrer">
+                <span class="project-name">{p.label}</span>
+                <span class="project-note">{p.note}</span>
+                <span class="project-ext" aria-hidden="true">↗</span>
+              </a>
+            ))
+          }
+        </div>
       </div>
     </footer>
   </body>

@@ -1823,6 +1823,56 @@ a.post-nav-item:hover .post-nav-label {
   color: var(--text-tertiary);
 }
 
+/* 页脚「项目」区：独立成行，与站内导航用发丝线分开 */
+.site-footer-projects {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+}
+
+.site-footer-projects .projects-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.site-footer .project-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.site-footer .project-name {
+  font-size: 13px;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.site-footer .project-note {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.site-footer .project-ext {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.site-footer .project-link:hover .project-name {
+  color: var(--link);
+}
+
+.site-footer .project-link:hover .project-ext {
+  color: var(--link);
+  transform: translate(1px, -1px);
+}
+
 /* ============================================================
    响应式
    ============================================================ */
@@ -1891,6 +1941,19 @@ a.post-nav-item:hover .post-nav-label {
 @media (max-width: 480px) {
   .site-nav-inner {
     padding: 0 18px;
+  }
+
+  /* 小屏页脚：项目说明文字收起，保证两个项目并排对齐 */
+  .site-footer-projects {
+    gap: 10px 20px;
+  }
+
+  .site-footer .project-note {
+    display: none;
+  }
+
+  .site-footer .project-link {
+    gap: 6px;
   }
 
   .site-nav-links {

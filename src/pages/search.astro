@@ -10,7 +10,7 @@ const index = posts.map((p) => ({
   title: p.data.title,
   description: p.data.description ?? '',
   tags: p.data.tags ?? [],
-  url: `/posts/${p.slug}/`,
+  url: `/posts/${p.id}/`,
   date: p.data.pubDate.toISOString().slice(0, 10),
 }));
 ---

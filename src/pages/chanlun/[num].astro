@@ -33,10 +33,10 @@ const sub = subOf(lesson.data.title);
     <header class="post-header">
       <div class="post-meta">
         <a class="post-cat" href="/chanlun">缠论原文</a>
-        <span>第 {lesson.data.lesson} 课</span>
+        <span>{lesson.data.volume}</span>
         <FormattedDate date={lesson.data.pubDate} />
       </div>
-      <h1 class="post-h1">{sub}</h1>
+      <h1 class="post-h1">{lesson.data.title}</h1>
     </header>
 
     <div class="prose">

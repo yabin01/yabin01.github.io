@@ -9,8 +9,6 @@ const lessons = (await getCollection('chanlun', ({ data }) => !data.draft)).sort
   (a, b) => a.data.lesson - b.data.lesson
 );
 
-const subOf = (title: string) => title.replace(/^教你炒股票\s*\d+\s*[：:]\s*/, '');
-
 const VOLUMES = ['上册', '中册', '下册'];
 const groups = VOLUMES.map((name) => ({
   name,
@@ -44,8 +42,7 @@ const last = lessons[lessons.length - 1]?.data.lesson ?? 0;
           {g.items.map((l) => (
             <li>
               <a class="cl-item" href={`/chanlun/${l.data.lesson}/`}>
-                <span class="cl-num">{String(l.data.lesson).padStart(3, '0')}</span>
-                <span class="cl-title">{subOf(l.data.title)}</span>
+                <span class="cl-title">{l.data.title}</span>
                 <span class="cl-date">
                   <FormattedDate date={l.data.pubDate} />
                 </span>
@@ -114,7 +111,7 @@ const last = lessons[lessons.length - 1]?.data.lesson ?? 0;
   }
   .cl-item {
     display: grid;
-    grid-template-columns: 3.2rem 1fr auto;
+    grid-template-columns: 1fr auto;
     align-items: baseline;
     gap: 1rem;
     padding: 0.85rem 0.4rem;
@@ -126,12 +123,6 @@ const last = lessons[lessons.length - 1]?.data.lesson ?? 0;
   .cl-item:hover {
     background: var(--bg-subtle);
     padding-left: 0.8rem;
-  }
-  .cl-num {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
   }
   .cl-title {
     font-size: 0.98rem;
@@ -145,11 +136,8 @@ const last = lessons[lessons.length - 1]?.data.lesson ?? 0;
   }
   @media (max-width: 640px) {
     .cl-item {
-      grid-template-columns: 2.6rem 1fr;
+      grid-template-columns: 1fr;
       row-gap: 0.25rem;
-    }
-    .cl-date {
-      grid-column: 2;
     }
   }
 </style>

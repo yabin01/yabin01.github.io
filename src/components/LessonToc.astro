@@ -1,0 +1,450 @@
+---
+/**
+ * 缠论原文「本课目录」
+ * —— 鼠标移到页面左边缘时，目录卡片从左侧滑出；移开自动收回。
+ * —— 小屏（<1024px）降级为正文顶部的可折叠静态目录。
+ *
+ * 目录条目来源：正文中的小节标题（## / ###）+ 正文区长段落的首句摘要
+ * （缠论原文多数课只有「## 回复」一个小节，靠段落摘要才能形成有意义的目录）。
+ */
+interface TocItem {
+  kind: 'h2' | 'p';
+  text: string;
+  key: string; // 用于在渲染后的 DOM 中定位元素（纯文本前 12 字）
+  order: number;
+}
+interface Neighbor {
+  num: number;
+  title: string;
+}
+
+interface Props {
+  body: string;
+  volume?: string;
+  lesson: number;
+  prev?: Neighbor | null;
+  next?: Neighbor | null;
+}
+
+const { body, volume, lesson, prev = null, next = null } = Astro.props;
+
+/* ---------------- 从原始 Markdown 提取目录 ---------------- */
+
+const stripMd = (s: string) =>
+  s
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[*_`>#]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const normKey = (s: string) => stripMd(s).replace(/[\s\u3000]/g, '').slice(0, 12);
+
+const blocks = body
+  .split(/\n{2,}/)
+  .map((b) => b.trim())
+  .filter(Boolean);
+
+const isHeading = (b: string) => /^#{2,3}\s/.test(b);
+const isNoise = (b: string) =>
+  /^!\[/.test(b) || // 图片
+  /^\*[^*]{4,40}\*$/.test(b) || // 段末时间戳 *2007-02-09 15:09:19*
+  /^\*\*[^*]{1,20}[：:]\*\*$/.test(b) || // **缠师曰：** / **路人问：**
+  /^路人[^：:]{0,8}[：:]?$/.test(b);
+
+const firstH2 = blocks.findIndex(isHeading);
+
+const headings: TocItem[] = [];
+const paras: TocItem[] = [];
+
+blocks.forEach((b, i) => {
+  if (isHeading(b)) {
+    const text = stripMd(b.replace(/^#+\s*/, ''));
+    if (text) headings.push({ kind: 'h2', text, key: normKey(text), order: i });
+    return;
+  }
+  // 段落摘要只从「正文区」取（第一个小节标题之后多为问答区，不建条目）
+  if (firstH2 !== -1 && i > firstH2) return;
+  if (isNoise(b)) return;
+  const plain = stripMd(b);
+  if (plain.length < 90) return;
+  const head = plain.slice(0, 24).replace(/[，、,。；;：:！!？?]$/, '');
+  paras.push({
+    kind: 'p',
+    text: head + (plain.length > 24 ? '…' : ''),
+    key: normKey(b),
+    order: i,
+  });
+});
+
+// 段落最多 7 条，超出则均匀采样，保持阅读节奏
+const MAX_PARA = 7;
+let paraItems = paras;
+if (paras.length > MAX_PARA) {
+  const step = paras.length / MAX_PARA;
+  paraItems = Array.from({ length: MAX_PARA }, (_, k) => paras[Math.floor(k * step)]);
+}
+
+const items = [...headings, ...paraItems].sort((a, b) => a.order - b.order);
+const meta = [volume, `第 ${lesson} 课`].filter(Boolean).join(' · ');
+---
+
+{
+  items.length > 0 && (
+    <>
+      <div class="lt-zone" aria-hidden="true">
+        <span class="lt-hint" />
+      </div>
+
+      <aside class="lt-panel" aria-label="本课目录">
+        <div class="lt-head">
+          <span class="lt-kicker">本课目录</span>
+          <span class="lt-meta">{meta}</span>
+        </div>
+
+        <nav class="lt-list" data-lt-spy>
+          {items.map((it) => (
+            <a
+              class={`lt-item lt-${it.kind}`}
+              href="#"
+              data-lt-key={it.key}
+              data-lt-kind={it.kind}
+            >
+              {it.text}
+            </a>
+          ))}
+        </nav>
+
+        <div class="lt-foot">
+          {prev ? (
+            <a class="lt-neighbor" href={`/chanlun/${prev.num}/`}>
+              <span class="lt-neighbor-label">← 上一课</span>
+              <span class="lt-neighbor-title">{prev.title}</span>
+            </a>
+          ) : (
+            <span class="lt-neighbor is-empty" />
+          )}
+          {next ? (
+            <a class="lt-neighbor lt-neighbor-next" href={`/chanlun/${next.num}/`}>
+              <span class="lt-neighbor-label">下一课 →</span>
+              <span class="lt-neighbor-title">{next.title}</span>
+            </a>
+          ) : (
+            <span class="lt-neighbor is-empty" />
+          )}
+        </div>
+
+        <a class="lt-all" href="/chanlun">全部 108 课</a>
+      </aside>
+
+      <details class="lt-inline">
+        <summary>本课目录</summary>
+        <nav class="lt-list">
+          {items.map((it) => (
+            <a
+              class={`lt-item lt-${it.kind}`}
+              href="#"
+              data-lt-key={it.key}
+              data-lt-kind={it.kind}
+            >
+              {it.text}
+            </a>
+          ))}
+        </nav>
+      </details>
+    </>
+  )
+}
+
+<style>
+  /* ---------- 左边缘触发带 ---------- */
+  .lt-zone {
+    position: fixed;
+    left: 0;
+    top: var(--nav-h);
+    bottom: 0;
+    width: 26px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+  }
+  .lt-hint {
+    display: block;
+    width: 3px;
+    height: 54px;
+    border-radius: 0 3px 3px 0;
+    background: #e2e2e2;
+    transition: background 0.2s ease, width 0.2s ease;
+  }
+  .lt-zone:hover .lt-hint {
+    background: var(--text);
+    width: 4px;
+  }
+
+  /* ---------- 滑出卡片 ---------- */
+  .lt-panel {
+    position: fixed;
+    left: 0;
+    top: var(--nav-h);
+    bottom: 0;
+    width: 268px;
+    z-index: 59;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0 16px;
+    background: var(--surface);
+    border-right: 1px solid var(--hairline);
+    transform: translateX(-100%);
+    /* 收起时略作延迟，避免鼠标划过就闪出 */
+    transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s;
+  }
+  .lt-zone:hover ~ .lt-panel,
+  .lt-panel:hover,
+  .lt-panel:focus-within {
+    transform: translateX(0);
+    transition-delay: 0s;
+  }
+
+  .lt-head {
+    padding: 0 18px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .lt-kicker {
+    font-family: var(--font-nav);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  .lt-meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lt-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .lt-item {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    border-left: 2px solid transparent;
+    transition: background 0.14s ease, color 0.14s ease,
+      border-color 0.14s ease;
+  }
+  .lt-p {
+    font-size: 12.5px;
+    color: var(--text-tertiary);
+    padding-left: 14px;
+  }
+  .lt-item:hover {
+    background: rgba(0, 0, 0, 0.045);
+    color: var(--text);
+  }
+  .lt-item.is-active {
+    border-left-color: var(--text);
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.03);
+  }
+
+  /* ---------- 底部邻近课程 ---------- */
+  .lt-foot {
+    padding: 12px 14px 0;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .lt-neighbor {
+    display: block;
+    padding: 6px 4px;
+    border-radius: 6px;
+    transition: background 0.14s ease;
+  }
+  .lt-neighbor:hover {
+    background: rgba(0, 0, 0, 0.045);
+  }
+  .lt-neighbor-label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+  }
+  .lt-neighbor-title {
+    display: block;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .lt-neighbor:hover .lt-neighbor-title {
+    color: var(--text);
+  }
+  .lt-neighbor.is-empty {
+    height: 0;
+    padding: 0;
+  }
+
+  .lt-all {
+    display: block;
+    margin: 10px 18px 0;
+    padding-top: 12px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .lt-all:hover {
+    color: var(--text);
+  }
+
+  /* ---------- 小屏降级：正文顶部静态目录 ---------- */
+  .lt-inline {
+    display: none;
+    margin: 0 0 28px;
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .lt-inline summary {
+    cursor: pointer;
+    font-family: var(--font-nav);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    list-style: none;
+  }
+  .lt-inline summary::-webkit-details-marker {
+    display: none;
+  }
+  .lt-inline summary::after {
+    content: '＋';
+    float: right;
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+  .lt-inline[open] summary::after {
+    content: '－';
+  }
+  .lt-inline .lt-list {
+    padding: 8px 0 0;
+    gap: 0;
+  }
+  .lt-inline .lt-item {
+    border-left: none;
+    border-radius: 0;
+    padding: 6px 2px;
+  }
+  .lt-inline .lt-item.is-active {
+    background: transparent;
+    color: var(--text);
+  }
+
+  @media (max-width: 1023px) {
+    .lt-zone,
+    .lt-panel {
+      display: none;
+    }
+    .lt-inline {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const norm = (s: string | null) => (s || '').replace(/[\s\u3000]/g, '');
+  const offset = 56 + 24; // 顶栏高度 + 呼吸位
+
+  const init = () => {
+    const prose = document.querySelector('.prose');
+    if (!prose) return;
+
+    const cache = new Map<string, Element | null>();
+    const findTarget = (key: string, kind: string): Element | null => {
+      const id = `${kind}:${key}`;
+      if (cache.has(id)) return cache.get(id)!;
+      const pool =
+        kind === 'h2'
+          ? Array.from(prose.querySelectorAll('h2, h3'))
+          : Array.from(prose.querySelectorAll(':scope > p'));
+      const hit = pool.find((el) => norm(el.textContent).startsWith(key)) || null;
+      cache.set(id, hit);
+      return hit;
+    };
+
+    // 所有目录条目（浮层 + 小屏内联）都绑定跳转
+    const lists = Array.from(document.querySelectorAll('.lt-list'));
+    lists.forEach((list) => {
+      list.querySelectorAll<HTMLAnchorElement>('.lt-item').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const target = findTarget(a.dataset.ltKey!, a.dataset.ltKind!);
+          if (!target) return;
+          e.preventDefault();
+          const top =
+            target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+          if (target.id) history.replaceState(null, '', `#${target.id}`);
+
+          target.classList.remove('lt-flash');
+          void (target as HTMLElement).offsetWidth;
+          target.classList.add('lt-flash');
+          window.setTimeout(() => target.classList.remove('lt-flash'), 1200);
+        });
+      });
+    });
+
+    // 滚动高亮（仅浮层那份）
+    const spy = document.querySelector('[data-lt-spy]');
+    if (!spy) return;
+    const spyItems = Array.from(spy.querySelectorAll<HTMLAnchorElement>('.lt-item'));
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        ticking = false;
+        let active: HTMLAnchorElement | null = null;
+        for (const it of spyItems) {
+          const t = findTarget(it.dataset.ltKey!, it.dataset.ltKind!);
+          if (t && t.getBoundingClientRect().top <= offset + 40) active = it;
+        }
+        spyItems.forEach((it) => it.classList.toggle('is-active', it === active));
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style is:global>
+  .lt-flash {
+    animation: ltFlash 1.1s ease;
+  }
+  @keyframes ltFlash {
+    0% {
+      background: rgba(0, 0, 0, 0.06);
+    }
+    100% {
+      background: transparent;
+    }
+  }
+</style>

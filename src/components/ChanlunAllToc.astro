@@ -1,0 +1,313 @@
+---
+// 缠论原文「全部课程目录」
+// —— 鼠标移到页面左边缘时，268px 白卡从左侧滑出；移开自动收回。
+// —— 小屏（<1024px）降级为正文顶部的可折叠静态目录。
+import FormattedDate from './FormattedDate.astro';
+
+interface Lesson {
+  lesson: number;
+  title: string;
+  volume: string;
+  pubDate: Date;
+}
+
+interface Props {
+  lessons: Lesson[];
+  current: number;
+}
+
+const { lessons, current } = Astro.props;
+
+const VOLUMES = ['上册', '中册', '下册'];
+const groups = VOLUMES.map((name) => ({
+  name,
+  items: lessons
+    .filter((l) => l.volume === name)
+    .sort((a, b) => a.lesson - b.lesson),
+})).filter((g) => g.items.length > 0);
+---
+
+{
+  groups.length > 0 && (
+    <>
+      <div class="ca-zone" aria-hidden="true">
+        <span class="ca-hint" />
+      </div>
+
+      <aside class="ca-panel" aria-label="缠论原文目录">
+        <div class="ca-head">
+          <span class="ca-kicker">缠论原文目录</span>
+          <span class="ca-meta">{lessons.length} 课 · 第 {current} 课</span>
+        </div>
+
+        <nav class="ca-list" data-ca-spy>
+          {groups.map((g) => (
+            <div class="ca-group">
+              <div class="ca-group-title">{g.name}</div>
+              {g.items.map((l) => (
+                <a
+                  class={`ca-item${l.lesson === current ? ' is-active' : ''}`}
+                  href={`/chanlun/${l.lesson}/`}
+                  data-ca-lesson={l.lesson}
+                  title={l.title}
+                >
+                  <span class="ca-lesson-num">{l.lesson}</span>
+                  <span class="ca-lesson-title">{l.title}</span>
+                </a>
+              ))}
+            </div>
+          ))}
+        </nav>
+
+        <a class="ca-all" href="/chanlun">← 返回目录页</a>
+      </aside>
+
+      <details class="ca-inline">
+        <summary>缠论原文目录（全部 {lessons.length} 课）</summary>
+        <nav class="ca-list">
+          {groups.map((g) => (
+            <div class="ca-group">
+              <div class="ca-group-title">{g.name}</div>
+              {g.items.map((l) => (
+                <a
+                  class={`ca-item${l.lesson === current ? ' is-active' : ''}`}
+                  href={`/chanlun/${l.lesson}/`}
+                  title={l.title}
+                >
+                  <span class="ca-lesson-num">{l.lesson}</span>
+                  <span class="ca-lesson-title">{l.title}</span>
+                </a>
+              ))}
+            </div>
+          ))}
+        </nav>
+      </details>
+    </>
+  )
+}
+
+<style>
+  /* ---------- 左边缘触发带 ---------- */
+  .ca-zone {
+    position: fixed;
+    left: 0;
+    top: var(--nav-h);
+    bottom: 0;
+    width: 26px;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+  }
+  .ca-hint {
+    display: block;
+    width: 3px;
+    height: 54px;
+    border-radius: 0 3px 3px 0;
+    background: #e2e2e2;
+    transition: background 0.2s ease, width 0.2s ease;
+  }
+  .ca-zone:hover .ca-hint {
+    background: var(--text);
+    width: 4px;
+  }
+
+  /* ---------- 滑出卡片 ---------- */
+  .ca-panel {
+    position: fixed;
+    left: 0;
+    top: var(--nav-h);
+    bottom: 0;
+    width: 320px;
+    z-index: 59;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 14px;
+    background: var(--surface);
+    border-right: 1px solid var(--hairline);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) 0.3s;
+  }
+  .ca-zone:hover ~ .ca-panel,
+  .ca-panel:hover,
+  .ca-panel:focus-within {
+    transform: translateX(0);
+    transition-delay: 0s;
+  }
+
+  .ca-head {
+    padding: 0 16px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .ca-kicker {
+    font-family: var(--font-nav);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  .ca-meta {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ca-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 10px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ca-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .ca-group-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 4px 6px;
+    margin-bottom: 2px;
+  }
+
+  .ca-item {
+    display: grid;
+    grid-template-columns: 30px 1fr;
+    gap: 8px;
+    align-items: baseline;
+    padding: 5px 6px 5px 8px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    border-left: 2px solid transparent;
+    text-decoration: none;
+    transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+  }
+  .ca-lesson-num {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .ca-lesson-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ca-item:hover {
+    background: rgba(0, 0, 0, 0.045);
+    color: var(--text);
+  }
+  .ca-item.is-active {
+    border-left-color: var(--text);
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.03);
+  }
+  .ca-item.is-active .ca-lesson-num {
+    color: var(--text);
+  }
+
+  .ca-all {
+    display: block;
+    margin: 8px 16px 0;
+    padding-top: 10px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+  .ca-all:hover {
+    color: var(--text);
+  }
+
+  /* 当前课滚动到可见区域 */
+  .ca-item.is-active {
+    scroll-margin: 80px 0 60px;
+  }
+
+  /* ---------- 小屏降级：正文顶部静态目录 ---------- */
+  .ca-inline {
+    display: none;
+    margin: 0 0 28px;
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .ca-inline summary {
+    cursor: pointer;
+    font-family: var(--font-nav);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    list-style: none;
+  }
+  .ca-inline summary::-webkit-details-marker {
+    display: none;
+  }
+  .ca-inline summary::after {
+    content: '＋';
+    float: right;
+    color: var(--text-tertiary);
+    font-weight: 400;
+  }
+  .ca-inline[open] summary::after {
+    content: '－';
+  }
+  .ca-inline .ca-list {
+    padding: 10px 0 0;
+    overflow: visible;
+  }
+  .ca-inline .ca-item {
+    border-left: none;
+    border-radius: 0;
+    padding: 5px 2px;
+  }
+  .ca-inline .ca-item.is-active {
+    background: transparent;
+    color: var(--text);
+  }
+
+  @media (max-width: 1023px) {
+    .ca-zone,
+    .ca-panel {
+      display: none;
+    }
+    .ca-inline {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const init = () => {
+    const panel = document.querySelector('.ca-panel');
+    const zone = document.querySelector('.ca-zone');
+    if (!panel || !zone) return;
+    const list = panel.querySelector('.ca-list');
+    if (!list) return;
+    const active = list.querySelector('.ca-item.is-active');
+    if (!active) return;
+    const scrollActive = () => {
+      active.scrollIntoView({ block: 'center', behavior: 'auto' });
+    };
+    // zone 在 panel 上方（z-index 更高），鼠标事件先到 zone；
+    // CSS 用 sibling hover 显示 panel，这里用 zone mouseenter 触发滚动。
+    zone.addEventListener('mouseenter', scrollActive, { once: true });
+    zone.addEventListener('focusin', scrollActive, { once: true });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>

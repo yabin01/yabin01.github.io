@@ -4,10 +4,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Comments from '../../components/Comments.astro';
-import LessonToc from '../../components/LessonToc.astro';
+import ChanlunAllToc from '../../components/ChanlunAllToc.astro';
 import { getCollection, render } from 'astro:content';
-import fs from 'node:fs';
-import path from 'node:path';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('chanlun', ({ data }) => !data.draft);
@@ -30,21 +28,12 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 const subOf = (t: string) => t.replace(/^教你炒股票\s*\d+\s*[：:]\s*/, '');
 const sub = subOf(lesson.data.title);
 
-// Astro 5 的 content entry 不再暴露原始 body，这里直接读源文件并去掉 frontmatter，
-// 供目录组件解析小节标题与段落摘要。
-const numStr = String(lesson.data.lesson).padStart(3, '0');
-let tocBody = '';
-try {
-  const raw = fs
-    .readFileSync(
-      path.join(process.cwd(), 'src/content/chanlun', `${numStr}.md`),
-      'utf-8'
-    )
-    .replace(/\r\n/g, '\n'); // 源文件是 CRLF，统一转 LF 再解析
-  tocBody = raw.replace(/^---[\s\S]*?---\n+/, '');
-} catch (e) {
-  console.warn('[LessonToc] 读取源文件失败：', e);
-}
+const tocLessons = all.map((l) => ({
+  lesson: l.data.lesson,
+  title: l.data.title,
+  volume: l.data.volume,
+  pubDate: l.data.pubDate,
+}));
 ---
 
 <BaseLayout title={lesson.data.title} description={lesson.data.description}>
@@ -58,13 +47,7 @@ try {
       <h1 class="post-h1">{lesson.data.title}</h1>
     </header>
 
-    <LessonToc
-      body={tocBody}
-      volume={lesson.data.volume}
-      lesson={lesson.data.lesson}
-      prev={prev ? { num: prev.data.lesson, title: subOf(prev.data.title) } : null}
-      next={next ? { num: next.data.lesson, title: subOf(next.data.title) } : null}
-    />
+    <ChanlunAllToc lessons={tocLessons} current={lesson.data.lesson} />
 
     <div class="prose">
       <Content />

@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-28",
+  "updated": "2026-10-29",
   "stats": {
-    "totalBooks": 215,
-    "finishedBooks": 30,
-    "highlights": 8147,
+    "totalBooks": 221,
+    "finishedBooks": 31,
+    "highlights": 8173,
     "thoughts": 243,
-    "readMinutes": 29788,
-    "readDays": 948,
+    "readMinutes": 29920,
+    "readDays": 956,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,33 +16,235 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 945769
+      "1767196800": 953720
     },
     "dailyReadTimes": {
-      "1788192000": 230,
-      "1788278400": 44,
-      "1788364800": 5194,
-      "1788451200": 1477,
-      "1788537600": 9489,
-      "1788624000": 11963,
-      "1788710400": 76,
-      "1788796800": 248,
-      "1788883200": 3609,
-      "1788969600": 85,
-      "1789056000": 275,
-      "1789142400": 3018,
-      "1789401600": 402,
-      "1789660800": 2461,
-      "1789920000": 2461,
-      "1790006400": 900,
-      "1790092800": 2010,
-      "1790179200": 0,
-      "1790265600": 0,
-      "1790352000": 0,
-      "1790438400": 352
+      "1790956800": 513,
+      "1791216000": 573,
+      "1791302400": 900,
+      "1791475200": 1345,
+      "1791820800": 162,
+      "1792944000": 0,
+      "1793030400": 0,
+      "1793116800": 0,
+      "1793203200": 1266
     }
   },
   "books": [
+    {
+      "bookId": "3300074909",
+      "title": "被折断的翅膀-纪伯伦全集02",
+      "author": "[黎巴嫩]纪伯伦 著",
+      "cover": "https://cdn.weread.qq.com/weread/cover/79/cpplatform_2ibcak5jfpi2gbp1htdfxp/t6_cpplatform_2ibcak5jfpi2gbp1htdfxp1697530054.jpg",
+      "finished": false,
+      "progress": 200,
+      "highlightCount": 5,
+      "thoughtCount": 0,
+      "lastReadAt": 1793270144,
+      "highlights": [
+        {
+          "chapter": "导读",
+          "text": "；用黑色的衣服，掩盖着你们的黑心肠",
+          "createTime": 1793269597
+        },
+        {
+          "chapter": "导读",
+          "text": "你们用祈祷活动你们的嘴唇，而你们的心像顽石一样僵硬",
+          "createTime": 1793269606
+        },
+        {
+          "chapter": "导读",
+          "text": "你们假装谦恭在神坛前顶礼膜拜，而你们的灵魂早已背叛了上帝",
+          "createTime": 1793269611
+        },
+        {
+          "chapter": "内容提要",
+          "text": "控诉封建权势与宗教种种罪恶是纪伯伦小说的创作主旨。",
+          "createTime": 1793270144
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "3300074908",
+      "title": "先知-纪伯伦全集系列01",
+      "author": "[黎巴嫩]纪伯伦 著",
+      "cover": "https://cdn.weread.qq.com/weread/cover/84/cpplatform_u3jzsmcfs2smhdgfqhfhe2/t6_cpplatform_u3jzsmcfs2smhdgfqhfhe21697530015.jpg",
+      "finished": false,
+      "progress": 1100,
+      "highlightCount": 2,
+      "thoughtCount": 0,
+      "lastReadAt": 1793269256,
+      "highlights": [
+        {
+          "chapter": "纪伯伦生平及著作",
+          "text": "在贝鲁特，纪伯伦还结识了艺术家哈比卜·苏鲁尔(1860—1927)和曾于1943年担任黎巴嫩国家元首的阿尤布·塔比特(1882—1947)",
+          "createTime": 1793268929
+        },
+        {
+          "chapter": "译者序",
+          "text": "因为我发现，物欲能使人没有痛苦地死去，而爱却用痛苦使人重生”​。",
+          "createTime": 1793269256
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "928623",
+      "title": "纪伯伦全集（共7册）",
+      "author": "[黎巴嫩]纪伯伦",
+      "cover": "https://cdn.weread.qq.com/weread/cover/28/yuewen_928623/t6_yuewen_9286231676968242.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 2,
+      "thoughtCount": 0,
+      "lastReadAt": 1793268334,
+      "highlights": [
+        {
+          "chapter": "出版说明",
+          "text": "瓦格纳、司汤达、马克思、欧勒、卡夫卡、马丁·路德",
+          "createTime": 1793268085
+        },
+        {
+          "chapter": "先知",
+          "text": "谁能够与自己的痛苦和孤寂毫无遗憾地分手呢？",
+          "createTime": 1793268334
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "3300081407",
+      "title": "系统之美（全新升级版）",
+      "author": "德内拉·梅多斯",
+      "cover": "https://cdn.weread.qq.com/weread/cover/43/cpplatform_4ssdshesskpsd8jw6hleyw/t6_cpplatform_4ssdshesskpsd8jw6hleyw1702455686.jpg",
+      "finished": false,
+      "progress": 1100,
+      "highlightCount": 11,
+      "thoughtCount": 0,
+      "lastReadAt": 1791884732,
+      "highlights": [
+        {
+          "chapter": "前言 真正的系统思考可以跨越历史",
+          "text": "如果一场革命摧毁了旧政府，但新政府思想和行为的系统模式没有变化，它就仍然难逃再次被推翻的命运",
+          "createTime": 1791512898
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "经济的繁荣或衰退不是由某个政治领导人左右的——上下波动是市场经济结构固有的一部分。",
+          "createTime": 1791513201
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "只有理解成瘾是更大的社会性问题的一部分，会受其他多个因素影响，人们才能开始应对这一问题",
+          "createTime": 1791513248
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "一方面，在教育中，我们被教导要去分析，要运用理性思考，要直接从原因推导结果，要把事物拆分成细小的、可理解的部分去看待，要通过行动和掌控周围的一切来解决问题。这种训练，正是许多社会和个人权力的源泉，引导我们将总统、竞争者、石油输出国组织、流感、毒品视作问题的原因。",
+          "createTime": 1791513316
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "重塑系统，发现更大的世界",
+          "createTime": 1791513357
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "根据竞争排斥原理，如果一个增强回路[插图]使比赛的获胜者占据了竞争优势，使他在未来的竞争中继续获胜，那结果将会变成几乎所有竞争者都被消灭。",
+          "createTime": 1791513390
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "工业革命以来，西方社会从科学、逻辑、还原论中受益良多，直觉和“整体论”的影响开始衰退",
+          "createTime": 1791513801
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "这种“归罪于外”的思维习惯，几乎不可避免地让我们去责备或怪罪他人，推脱自己的责任，并迷恋于寻找能够摆脱或解决问题的“控制按钮”、“药丸”、产品或技术支持",
+          "createTime": 1791513825
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "只有重新找回直觉，停止相互指责和抱怨，看清系统的结构，认识到系统自身恰恰是问题的根源，找到重塑系统结构的勇气和智慧，才能真正解决这些问题。",
+          "createTime": 1791513893
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "每一个盲人都真切地感知到了大象身体的一个部分，但他们的理解都是片面的。",
+          "createTime": 1791884727
+        },
+        {
+          "chapter": "引言 系统多棱镜，更好地应对系统的挑战",
+          "text": "不能只通过了解系统的各个构成部分来认识系统整体的行为。",
+          "createTime": 1791884732
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "29790368",
+      "title": "奥古斯都",
+      "author": "约翰·威廉斯",
+      "cover": "https://cdn.weread.qq.com/weread/cover/66/YueWen_29790368/t6_YueWen_29790368.jpg",
+      "finished": false,
+      "progress": 0,
+      "highlightCount": 4,
+      "thoughtCount": 0,
+      "lastReadAt": 1791251648,
+      "highlights": [
+        {
+          "chapter": "序幕 书信 尤利乌斯·恺撒致阿提娅（公元前45年）",
+          "text": "士兵必须健康，而元老死了也无妨，对世界损伤不大。",
+          "createTime": 1791251330
+        },
+        {
+          "chapter": "序幕 书信 尤利乌斯·恺撒致阿提娅（公元前45年）",
+          "text": "不过你有我们家的人有时会犯的毛病，被死板的道德缚住了手脚",
+          "createTime": 1791251391
+        },
+        {
+          "chapter": "序幕 书信 尤利乌斯·恺撒致阿提娅（公元前45年）",
+          "text": "说起这个，那位你乐意称为丈夫的人——马尔基乌斯·菲利普斯，最近究竟怎样？",
+          "createTime": 1791251623
+        },
+        {
+          "chapter": "序幕 书信 尤利乌斯·恺撒致阿提娅（公元前45年）",
+          "text": "联同他的朋友西塞罗",
+          "createTime": 1791251648
+        }
+      ],
+      "thoughts": []
+    },
+    {
+      "bookId": "CB_E6oCJKCJm9u576f75OFPlC7B",
+      "title": "life-level-up-guide-zh",
+      "author": "韩先凯",
+      "cover": "https://res.weread.qq.com/wrepub/CB_E6oCJKCJm9u576f75OFPlC7B_parsecover",
+      "finished": true,
+      "progress": 9100,
+      "highlightCount": 3,
+      "thoughtCount": 0,
+      "lastReadAt": 1790557793,
+      "highlights": [
+        {
+          "chapter": "序章：先不要急着改变人生",
+          "text": "人生更像一间每天都要重新整理的房间。昨天留下的灰尘，今天还在；一件坏掉的家具，不能靠更响亮的口号修好；窗外的天气，也从来不听我们的安排。所谓进阶，很多时候只是把地面扫干净，把该道歉的话说出来，把身体送去看医生，把今天能完成的那一步完成。",
+          "createTime": 1790557322
+        },
+        {
+          "chapter": "认知篇：把努力变成可验证的学习",
+          "text": "首版只回答一个问题：在这些条件下，我当时能够独立做什么？",
+          "createTime": 1790557602
+        },
+        {
+          "chapter": "认知篇：把努力变成可验证的学习",
+          "text": "学习方法最诱人的地方，是它看起来像一条捷径。可任何方法只有在资料合上、提示离开、题目更换以后仍然能帮助你完成任务，才开始真正属于你。",
+          "createTime": 1790557793
+        }
+      ],
+      "thoughts": []
+    },
     {
       "bookId": "823535",
       "title": "血酬定律：中国历史中的生存游戏",
@@ -73,7 +275,7 @@
       "author": "本·伯南克",
       "cover": "https://cdn.weread.qq.com/weread/cover/50/cpPlatform_e1X7NMQapS7gjSsFxCNMEU/t6_cpPlatform_e1X7NMQapS7gjSsFxCNMEU.jpg",
       "finished": false,
-      "progress": 300,
+      "progress": 500,
       "highlightCount": 1,
       "thoughtCount": 0,
       "lastReadAt": 1789427972,
@@ -1195,7 +1397,7 @@
     {
       "bookId": "3300076625",
       "title": "昨日的世界：一个欧洲人的回忆（果麦经典）",
-      "author": "斯蒂芬·茨威格",
+      "author": "[奥]斯蒂芬·茨威格",
       "cover": "https://cdn.weread.qq.com/weread/cover/14/cpplatform_d9qnole3xewwud7ybg6oes/t6_cpplatform_d9qnole3xewwud7ybg6oes1698998643.jpg",
       "finished": false,
       "progress": 0,
@@ -30432,7 +30634,7 @@
     {
       "bookId": "568791",
       "title": "性学三论（果麦经典）",
-      "author": "弗洛伊德",
+      "author": "[奥]弗洛伊德",
       "cover": "https://cdn.weread.qq.com/weread/cover/56/YueWen_568791/t6_YueWen_568791.jpg",
       "finished": false,
       "progress": 600,

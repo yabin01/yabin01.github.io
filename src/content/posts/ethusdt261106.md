@@ -3,7 +3,7 @@ title: 2026年11月1-6日ETHUSDT走势分析
 description: 叠加币安黑客事件和美国中期选举ETH的过山车行情
 pubDate: 2026-11-06
 category: 交易
-tags: ["缠论", "复盘", "ETH"]
+tags: ["缠论", "复盘", "ETHUSDT"]
 draft: false
 ---
 ### 概览
@@ -108,3 +108,4 @@ draft: false
 ---
 
 2026年11月6日17：53    CHingyuan
+

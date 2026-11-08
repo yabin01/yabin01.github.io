@@ -6,8 +6,6 @@ category: 交易
 tags: ["走势分析", "ETHUSDT"]
 draft: false
 ---
-# 2026年9月24日ETHUSDT行情分析
-
 ## 摘要
 本分析选用的行情数据为[OKX](https://www.topfgcnzqwl.com/join/PAS522D3)交易所的ETHUSDT永续合约数据。
 *注：4H0-4H1为4H同级别分解的A0段，各级别依次类推。*
@@ -109,4 +107,5 @@ A3生长中，A2相对于A0未盘整背驰，1M2处的Short继续Hold，等待A3
 
 ---
 **ChingYuan | Sep 24,2026   05:36**
+
 

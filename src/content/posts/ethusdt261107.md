@@ -7,6 +7,8 @@ tags: ["缠论", "复盘", "ETHUSDT"]
 draft: false
 ---
 ### 今日概览
+本分析选用的行情数据为[OKX](https://www.topfgcnzqwl.com/join/PAS522D3)交易所的ETHUSDT永续合约数据。
+
 11月6日的大幅下跌，于今日形成一个5M中枢，并发生5M盘整背驰（22点）当前从18开始形成5M向上段的中枢，从22开始的1M走势形成2B，1M中枢形成中。22点的位置是一个5M盘整背驰买点。
 ![image11070.png](/images/ethusdt261107/image11070.png)
 
@@ -69,4 +71,5 @@ draft: false
 图7：ETHUSDT·5走势图表
 
 ---
-2026年 11月7日  23：00  CHingyuan
+**CHingYuan | Nov 7,2026 23：00**  
+

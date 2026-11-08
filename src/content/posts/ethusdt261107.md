@@ -3,7 +3,7 @@ title: 2026年11月7日ETHUSDT走势分析
 description: 11月6日的大幅下跌，于今日形成一个5M中枢，并发生5M盘整背驰
 pubDate: 2026-11-07
 category: 交易
-tags: ["缠论", "复盘", "ETHUSDT"]
+tags: ["走势分析", "ETHUSDT"]
 draft: false
 ---
 ### 今日概览
@@ -72,4 +72,5 @@ draft: false
 
 ---
 **CHingYuan | Nov 7,2026 23：00**  
+
 

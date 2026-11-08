@@ -1,5 +1,5 @@
 ---
-title: 2026年9月20日走势分析
+title: 2026年9月20日ETHUSDT走势分析
 description: 本报告按周期从大到小进行分析，给出各周期方向判断。分析方法：同级别分解。
 pubDate: 2026-09-20
 category: 交易
@@ -8,7 +8,7 @@ draft: false
 ---
 ### 摘要
 
-**本报告按周期从大到小进行分析，给出各周期方向判断。分析方法：同级别分解。**
+**本分析选用的行情数据为[OKX](https://www.topfgcnzqwl.com/join/PAS522D3)交易所的ETHUSDT永续合约数据。按周期从大到小进行分析，给出各周期方向判断。分析方法：同级别分解。**
 
 # 4小时周期行情分析
 ![image.png](/images/trade/image.png)
@@ -41,6 +41,7 @@ draft: false
 ---
 
 ChingYuan | Sep 20,2026 20:00
+
 
 
 

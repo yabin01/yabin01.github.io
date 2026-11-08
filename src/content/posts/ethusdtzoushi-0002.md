@@ -1,9 +1,9 @@
 ---
-title: 2026年9月20日行情分析
+title: 2026年9月20日走势分析
 description: 本报告按周期从大到小进行分析，给出各周期方向判断。分析方法：同级别分解。
 pubDate: 2026-09-20
 category: 交易
-tags: []
+tags: ["复盘", "ETHUSDT"]
 draft: false
 ---
 # 2026年9月20日行情分析
@@ -43,5 +43,6 @@ draft: false
 ---
 
 2026/09/20-20：00 By Liu CHongYuan
+
 
 

@@ -1,9 +1,9 @@
 ---
-title: 2026年9月24日ETHUSDT行情分析
+title: 2026年9月24日ETHUSDT走势分析
 description: 不同级别的同级别分解策略下的行情分析
 pubDate: 2026-09-24
 category: 交易
-tags: ["缠论", "行情分析", "ETHUSDT"]
+tags: ["走势分析", "ETHUSDT"]
 draft: false
 ---
 # 2026年9月24日ETHUSDT行情分析
@@ -109,3 +109,4 @@ A3生长中，A2相对于A0未盘整背驰，1M2处的Short继续Hold，等待A3
 
 ---
 **ChingYuan | Sep 24,2026   05:36**
+

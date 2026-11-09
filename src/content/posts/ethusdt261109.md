@@ -3,7 +3,7 @@ title: 2026年11月9日ETHUSDT走势分析
 description: 今天发生大规模多头仓位清算，1个小时内ETH永续合约全网清算4.44B美元。
 pubDate: 2026-11-09
 category: 交易
-tags: ["走势分析，ETHUSDT"]
+tags: ["走势分析", "ETHUSDT"]
 draft: false
 ---
 

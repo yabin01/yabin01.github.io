@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-05",
+  "updated": "2026-11-09",
   "stats": {
     "totalBooks": 223,
     "finishedBooks": 31,
     "highlights": 8198,
     "thoughts": 243,
-    "readMinutes": 30018,
-    "readDays": 959,
+    "readMinutes": 30047,
+    "readDays": 960,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,13 +16,13 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 959619
+      "1767196800": 961350
     },
     "dailyReadTimes": {
       "1793548800": 5039,
       "1793635200": 210,
-      "1793721600": 0,
-      "1793808000": 648
+      "1793808000": 650,
+      "1794153600": 1729
     }
   },
   "books": [
@@ -111,7 +111,7 @@
       "author": "刘统",
       "cover": "https://wfqqreader-1252317822.image.myqcloud.com/cover/338/24979338/t6_24979338.jpg",
       "finished": false,
-      "progress": 900,
+      "progress": 1300,
       "highlightCount": 12,
       "thoughtCount": 0,
       "lastReadAt": 1793597807,
@@ -3681,7 +3681,7 @@
     {
       "bookId": "26087716",
       "title": "十部小说及其作者（果麦经典）",
-      "author": "毛姆",
+      "author": "[英]毛姆",
       "cover": "https://wfqqreader-1252317822.image.myqcloud.com/cover/716/26087716/t6_26087716.jpg",
       "finished": false,
       "progress": 0,

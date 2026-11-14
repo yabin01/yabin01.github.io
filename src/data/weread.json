@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-09",
+  "updated": "2026-11-14",
   "stats": {
     "totalBooks": 223,
     "finishedBooks": 31,
     "highlights": 8198,
     "thoughts": 243,
-    "readMinutes": 30047,
-    "readDays": 960,
+    "readMinutes": 30384,
+    "readDays": 963,
     "yearlyReadTimes": {
       "1514736000": 25939,
       "1546272000": 60253,
@@ -16,13 +16,17 @@
       "1672502400": 70502,
       "1704038400": 394029,
       "1735660800": 19198,
-      "1767196800": 961350
+      "1767196800": 981535
     },
     "dailyReadTimes": {
       "1793548800": 5039,
       "1793635200": 210,
       "1793808000": 650,
-      "1794153600": 1729
+      "1794153600": 1729,
+      "1794240000": 0,
+      "1794326400": 4553,
+      "1794412800": 15223,
+      "1794499200": 409
     }
   },
   "books": [
@@ -3789,7 +3793,7 @@
     {
       "bookId": "3300206184",
       "title": "先成为自己，再原谅世界（张秋子导读）",
-      "author": "奥斯卡·王尔德",
+      "author": "[爱尔兰]奥斯卡·王尔德",
       "cover": "https://cdn.weread.qq.com/weread/cover/68/cpplatform_gce8irm5nmsdwuyo3rwpp5/t6_cpplatform_gce8irm5nmsdwuyo3rwpp51779179466.jpg",
       "finished": false,
       "progress": 100,
